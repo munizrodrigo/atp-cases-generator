@@ -24,7 +24,7 @@ class Argument(object):
         input_group = gen_group.add_mutually_exclusive_group(required=False)
         input_group.add_argument(
             "-i",
-            "--in",
+            "--inp",
             action="store",
             type=str,
             help="set the path of input .xlsx or .txt file",

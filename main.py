@@ -1,8 +1,11 @@
+import pprint
 from sys import argv
-from os.path import abspath
+from os.path import abspath, splitext
 from configuration.config import Configuration
 from argument.arg import Argument
-from input.input_txt import define_input_dict
+from input.input_txt import define_input_dict as define_input_dict_txt
+from input.input_xlsx import define_input_dict as define_input_dict_xlsx
+from exceptions.exceptions import InputValueError
 
 
 def main():
@@ -13,10 +16,27 @@ def main():
     if len(argv) > 1:
         args = cmd.parser.parse_args()
 
-        with open(args.inp, "r", encoding="utf-8-sig") as input_file:
-            feeder_dict = define_input_dict(input_file=input_file)
+        input_ext = splitext(args.inp)[1].lower()
 
-        print(feeder_dict)
+        if input_ext == ".txt":
+            with open(args.inp, "r", encoding="utf-8-sig") as input_file:
+                try:
+                    feeder_dict = define_input_dict_txt(input_file=input_file)
+                except InputValueError as excep:
+                    print("An error occurred!")
+                    print(excep.errors)
+                    exit()
+
+        elif input_ext == ".xlsx":
+            with open(args.inp, "rb") as input_file:
+                try:
+                    feeder_dict = define_input_dict_xlsx(input_file=input_file)
+                except InputValueError as excep:
+                    print("An error occurred!")
+                    print(excep.errors)
+                    exit()
+
+        pprint.pprint(feeder_dict)
     else:
         args = cmd.parser.parse_args(["-h"])
 

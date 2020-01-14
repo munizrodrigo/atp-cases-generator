@@ -10,7 +10,7 @@ def read_input(input_file):
         row_value = row_value.strip()
         row_value = remove_spaces(" +", " ", row_value)
         if not len(row_value) == 0:
-            if not row_value[0] == "#":
+            if not row_value.startswith("##"):
                 input_file_lines.append(row_value)
     return input_file_lines
 

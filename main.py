@@ -1,11 +1,14 @@
 import pprint
+
 from sys import argv
 from os.path import abspath, splitext
+
 from configuration.config import Configuration
 from argument.arg import Argument
 from input.input_txt import define_input_dict as define_input_dict_txt
 from input.input_xlsx import define_input_dict as define_input_dict_xlsx
 from input.input_dict import define_input_dict as define_input_dict_json
+from feeder.feeder import Feeder
 from exceptions.exceptions import *
 
 
@@ -88,6 +91,20 @@ def main():
                 exit()
 
         pprint.pprint(feeder_dict)
+
+        try:
+            feeder = Feeder(feeder_dict=feeder_dict)
+        except CyclicGraphError as excep:
+            print("An error occurred!")
+            print(excep)
+            print(excep.errors)
+            exit()
+
+        feeder.define_area("820", lim=10)
+
+        fig = feeder.electric_diagram.base_figure
+        fig.show()
+
     else:
         args = cmd.parser.parse_args(["-h"])
 

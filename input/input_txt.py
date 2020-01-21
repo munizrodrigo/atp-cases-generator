@@ -152,23 +152,26 @@ def define_capacitor(input_file_lines):
     return capacitor_dict
 
 
-def define_surge_arrester(input_file_lines):
-    surge_arrester_lines = []
-    is_surge_arrester = False
+def define_switch(input_file_lines):
+    switch_lines = []
+    is_switch = False
     for line in input_file_lines:
-        if "END" in line and is_surge_arrester:
+        if "END" in line and is_switch:
             break
-        if "START" not in line and is_surge_arrester:
-            surge_arrester_lines.append(line)
-        if "SURGE ARRESTER" in line:
-            is_surge_arrester = True
-    surge_arrester_dict = {}
-    for line in surge_arrester_lines:
-        (code, bus) = tuple(line.split(","))
-        surge_arrester_dict[str(code).strip()] = {
-            "bus": str(bus).strip()
+        if "START" not in line and is_switch:
+            switch_lines.append(line)
+        if "SWITCH" in line:
+            is_switch = True
+    switch_dict = {}
+    for line in switch_lines:
+        (code, bus_from, bus_to, tclose, topen) = tuple(line.split(","))
+        switch_dict[str(code).strip()] = {
+            "from": str(bus_from).strip(),
+            "to": str(bus_to).strip(),
+            "tclose": str(tclose).strip(),
+            "topen": str(topen).strip()
         }
-    return surge_arrester_dict
+    return switch_dict
 
 
 def define_pole(input_file_lines):
@@ -214,6 +217,25 @@ def define_cable(input_file_lines):
     return cable_dict
 
 
+def define_surge_arrester(input_file_lines):
+    surge_arrester_lines = []
+    is_surge_arrester = False
+    for line in input_file_lines:
+        if "END" in line and is_surge_arrester:
+            break
+        if "START" not in line and is_surge_arrester:
+            surge_arrester_lines.append(line)
+        if "SURGE ARRESTER" in line:
+            is_surge_arrester = True
+    surge_arrester_dict = {}
+    for line in surge_arrester_lines:
+        (code, bus) = tuple(line.split(","))
+        surge_arrester_dict[str(code).strip()] = {
+            "bus": str(bus).strip()
+        }
+    return surge_arrester_dict
+
+
 def define_surge(input_file_lines):
     surge_lines = []
     is_surge = False
@@ -245,9 +267,10 @@ def define_input_dict(input_file):
         "source": define_source(input_file_lines),
         "load": define_load(input_file_lines),
         "capacitor": define_capacitor(input_file_lines),
-        "surge_arrester": define_surge_arrester(input_file_lines),
+        "switch": define_switch(input_file_lines),
         "pole": define_pole(input_file_lines),
         "cable": define_cable(input_file_lines),
+        "surge_arrester": define_surge_arrester(input_file_lines),
         "surge": define_surge(input_file_lines)
     }
     input_dict = convert_dict_types(input_dict=input_dict)

@@ -715,5 +715,6 @@
             "tfront": 1.2e-06
         }
     },
-    "surge_arrester": {}
+    "surge_arrester": {},
+	"switch": {}
 }

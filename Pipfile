@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 pandas = "*"
 xlrd = "*"
+networkx = "*"
+plotly = "*"
 
 [requires]
 python_version = "3.8"

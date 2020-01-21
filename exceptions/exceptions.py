@@ -10,19 +10,19 @@ class DictValueError(ValueError):
         self.errors = errors
 
 
-class EmptyRequiredArgument(Exception):
+class EmptyRequiredArgumentError(Exception):
     def __init__(self, message, errors=None):
         super().__init__(message)
         self.errors = errors
 
 
-class IncorrectInputFormat(ValueError):
+class IncorrectInputFormatError(ValueError):
     def __init__(self, message, errors=None):
         super().__init__(message)
         self.errors = errors
 
 
-class IncorrectDictFormat(ValueError):
+class IncorrectDictFormatError(ValueError):
     def __init__(self, message, errors=None):
         super().__init__(message)
         self.errors = errors

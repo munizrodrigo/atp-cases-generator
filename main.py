@@ -40,11 +40,11 @@ def main():
 
             else:
                 try:
-                    raise IncorrectInputFormat(
+                    raise IncorrectInputFormatError(
                         message="Input must be .txt or .xlsx",
-                        errors="Input file format is '{}' instead of .txt or .xlsx".format(input_ext)
+                        errors="Input file format is '{0}' instead of .txt or .xlsx".format(input_ext)
                     )
-                except IncorrectInputFormat as excep:
+                except IncorrectInputFormatError as excep:
                     print("An error occurred!")
                     print(excep)
                     print(excep.errors)
@@ -65,11 +65,11 @@ def main():
 
             else:
                 try:
-                    raise IncorrectDictFormat(
+                    raise IncorrectDictFormatError(
                         message="Dict must be .json or .txt",
-                        errors="Dict file format is '{}' instead of .json or .txt".format(dict_ext)
+                        errors="Dict file format is '{0}' instead of .json or .txt".format(dict_ext)
                     )
-                except IncorrectDictFormat as excep:
+                except IncorrectDictFormatError as excep:
                     print("An error occurred!")
                     print(excep)
                     print(excep.errors)
@@ -77,11 +77,11 @@ def main():
 
         else:
             try:
-                raise EmptyRequiredArgument(
+                raise EmptyRequiredArgumentError(
                     message="Arguments --inp or --dict are empty",
                     errors="You must define arguments --inp or --dict."
                 )
-            except EmptyRequiredArgument as excep:
+            except EmptyRequiredArgumentError as excep:
                 print("An error occurred!")
                 print(excep)
                 print(excep.errors)

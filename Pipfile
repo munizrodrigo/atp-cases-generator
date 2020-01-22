@@ -10,6 +10,7 @@ pandas = "*"
 xlrd = "*"
 networkx = "*"
 plotly = "*"
+webcolors = "*"
 
 [requires]
 python_version = "3.8"

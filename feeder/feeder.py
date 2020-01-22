@@ -13,6 +13,9 @@ class Feeder(object):
         self.graph = None
         self.center_bus = None
         self.bus_area = None
+        self.edge_frontier = None
+        self.bus_frontier = None
+        self.equivalent_graphs = None
         self.electric_diagram = None
 
         self.define_main_source_bus()
@@ -178,7 +181,7 @@ class Feeder(object):
             adj = copy(next_adj)
             next_adj = []
             for bus in adj:
-                if not bus in self.bus_area and len(self.bus_area) < lim:
+                if bus not in self.bus_area and len(self.bus_area) < lim:
                     self.bus_area.append(bus)
                     next_adj.extend(list(dict(graph_undirected[bus]).keys()))
             next_adj = list(dict.fromkeys(next_adj))
@@ -187,6 +190,63 @@ class Feeder(object):
                     next_adj.remove(bus)
             if len(self.bus_area) == lim:
                 break
+        for node in self.graph.nodes():
+            if node in self.bus_area:
+                self.graph.nodes[node]["area"] = True
+            else:
+                self.graph.nodes[node]["area"] = False
+        self.bus_frontier = []
+        self.edge_frontier = []
+        for edge in self.graph.edges():
+            (node_from, node_to) = edge
+            if node_from in self.bus_area and node_to in self.bus_area:
+                self.graph[node_from][node_to]["area"] = True
+            elif node_from in self.bus_area:
+                self.graph[node_from][node_to]["area"] = False
+                self.bus_frontier.append(node_from)
+                self.edge_frontier.append(edge)
+            elif node_to in self.bus_area:
+                self.graph[node_from][node_to]["area"] = False
+                self.bus_frontier.append(node_to)
+                self.edge_frontier.append(edge)
+            else:
+                self.graph[node_from][node_to]["area"] = False
+
+        self.generate_equivalent_graphs()
+
+    def generate_equivalent_graphs(self):
+        equivalent_graph = copy(self.graph)
+        nodes_to_remove = []
+        for node in equivalent_graph:
+            if equivalent_graph.nodes[node]["area"]:
+                nodes_to_remove.append(node)
+
+        equivalent_graph.remove_nodes_from(nodes=nodes_to_remove)
+
+        for (n_eq, edge) in enumerate(self.edge_frontier):
+            if edge[0] in self.bus_frontier:
+                node_eq_name = "{0} - EQ: {1}".format(edge[0], n_eq)
+                equivalent_graph.add_node(node_eq_name, **copy(self.graph.nodes[edge[0]]))
+                equivalent_graph.add_edge(
+                    u_of_edge=node_eq_name,
+                    v_of_edge=edge[1],
+                    **copy(self.graph[edge[0]][edge[1]])
+                )
+            else:
+                node_eq_name = "{0} - EQ: {1}".format(edge[1], n_eq)
+                equivalent_graph.add_node(node_eq_name, **copy(self.graph.nodes[edge[1]]))
+                equivalent_graph.add_edge(
+                    u_of_edge=edge[0],
+                    v_of_edge=node_eq_name,
+                    **copy(self.graph[edge[0]][edge[1]])
+                )
+
+        equivalents = list(nx.connected_components(nx.to_undirected(copy(equivalent_graph))))
+        equivalents = [list(eq) for eq in equivalents]
+
+        self.equivalent_graphs = []
+        for eq in equivalents:
+            self.equivalent_graphs.append(equivalent_graph.subgraph(eq).copy())
 
     @staticmethod
     def is_cyclic(graph, root):

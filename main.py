@@ -100,10 +100,11 @@ def main():
             print(excep.errors)
             exit()
 
-        feeder.define_area("820", lim=10)
+        fig_base = feeder.electric_diagram.base_figure
 
-        fig = feeder.electric_diagram.base_figure
-        fig.show()
+        feeder.define_area("852", lim=20)
+        feeder.electric_diagram.generate_area_figure()
+        fig_base.show()
 
     else:
         args = cmd.parser.parse_args(["-h"])

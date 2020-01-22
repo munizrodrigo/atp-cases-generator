@@ -104,7 +104,10 @@ def main():
 
         feeder.define_area("852", lim=20)
         feeder.electric_diagram.generate_area_figure()
+        fig_area = feeder.electric_diagram.area_figure
+
         fig_base.show()
+        fig_area.show()
 
     else:
         args = cmd.parser.parse_args(["-h"])

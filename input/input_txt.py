@@ -187,12 +187,18 @@ def define_pole(input_file_lines):
     pole_dict = {}
     for line in pole_lines:
         (code, bus, distance, height, sag) = tuple(line.split(","))
-        pole_dict[str(code).strip()] = {
-            "phase": str(bus).strip(),
-            "distance": str(distance).strip(),
-            "height": str(height).strip(),
-            "sag": str(sag).strip()
-        }
+        if not str(code).strip() in pole_dict:
+            pole_dict[str(code).strip()] = {
+                "phase": [str(bus).strip()],
+                "distance": [str(distance).strip()],
+                "height": [str(height).strip()],
+                "sag": [str(sag).strip()]
+            }
+        else:
+            pole_dict[str(code).strip()]["phase"].append(str(bus).strip())
+            pole_dict[str(code).strip()]["distance"].append(str(distance).strip())
+            pole_dict[str(code).strip()]["height"].append(str(height).strip())
+            pole_dict[str(code).strip()]["sag"].append(str(sag).strip())
     return pole_dict
 
 

@@ -98,7 +98,11 @@ def convert_dict_types(input_dict):
             for (name, value) in values.items():
                 converter = list_types[name]
                 try:
-                    input_dict_corrected[case][element][name] = converter(value)
+                    if case == "pole":
+                        for (n, list_value) in enumerate(value):
+                            input_dict_corrected[case][element][name][n] = converter(list_value)
+                    else:
+                        input_dict_corrected[case][element][name] = converter(value)
                 except ValueError as excep:
                     raise InputValueError(
                         message=excep,

@@ -2,7 +2,7 @@ import networkx as nx
 
 from copy import deepcopy as copy
 
-from feeder.electricdiagram import ElectricDiagram
+from grid.electricdiagram import ElectricDiagram
 from exceptions.exceptions import CyclicGraphError
 
 

@@ -11,8 +11,15 @@ def define_input_dict(input_file):
         header = list(df.columns)
         for (index, row) in df.iterrows():
             list_row = list(row)
-            input_dict[str(case).lower()][str(list_row[0])] = {}
+            if str(list_row[0]) not in input_dict[str(case).lower()]:
+                input_dict[str(case).lower()][str(list_row[0])] = {}
             for (h, v) in zip(header[1:], list_row[1:]):
-                input_dict[str(case).lower()][str(list_row[0])][str(h).lower()] = v
+                if str(case).lower() == "pole":
+                    if not str(h).lower() in input_dict[str(case).lower()][str(list_row[0])]:
+                        input_dict[str(case).lower()][str(list_row[0])][str(h).lower()] = [v]
+                    else:
+                        input_dict[str(case).lower()][str(list_row[0])][str(h).lower()].append(v)
+                else:
+                    input_dict[str(case).lower()][str(list_row[0])][str(h).lower()] = v
     input_dict = convert_dict_types(input_dict=input_dict)
     return input_dict

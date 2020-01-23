@@ -8,7 +8,7 @@ from argument.arg import Argument
 from input.input_txt import define_input_dict as define_input_dict_txt
 from input.input_xlsx import define_input_dict as define_input_dict_xlsx
 from input.input_dict import define_input_dict as define_input_dict_json
-from feeder.feeder import Feeder
+from grid.feeder import Feeder
 from exceptions.exceptions import *
 
 

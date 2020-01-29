@@ -6,8 +6,19 @@ from grid.impedance import Impedance
 
 
 class GridEquivalent(object):
-    def __init__(self):
-        pass
+    def __init__(self, feeder):
+        self.feeder = feeder
+
+    def calc_equivalent_impedances(self):
+        for node in self.feeder.graph.nodes():
+            self.feeder.graph.nodes[node]["z"] = GridEquivalent.calc_lumped_equivalent_bus(
+                bus=self.feeder.graph.nodes[node]
+            )
+
+        for (edge_from, edge_to) in self.feeder.graph.edges():
+            self.feeder.graph[edge_from][edge_to]["z"] = GridEquivalent.calc_lumped_equivalent_line(
+                branch=self.feeder.graph[edge_from][edge_to]
+            )
 
     @staticmethod
     def calc_inductance_line(height_struct, sag, length, rmg, dist_horiz):

@@ -167,10 +167,23 @@ class Impedance(object):
         return abs(self.to_frequency(f=self.f)) >= abs(other.to_frequency(f=self.f))
 
     def __str__(self):
-        return "{0}+j{1} at f = {2} Hz".format(self.R, self.X, self.f)
+        r = self.R
+        x = abs(self.X)
+        f = self.f
+        if self.X >= 0.0:
+            signal = "+"
+        else:
+            signal = "-"
+        x_format = "e" if x < 0.01 else "f"
+        r_format = "e" if r < 0.01 else "f"
+        str_format = "{0:.2" + r_format + "}{1}j{2:.2" + x_format + "} at f = {3:.2f} Hz"
+        return str_format.format(r, signal, x, f)
+
+    def __repr__(self):
+        return str(self)
 
     def to_frequency(self, f):
         return Impedance(R=self.R, L=self.L, f=f)
 
     def to_polar_str(self):
-        return "{0} /_ {1}{2} ".format(abs(self), angle(self.Z, deg=True), chr(176))
+        return "{0:.6f} /_ {1:.6f}{2} ".format(abs(self), angle(self.Z, deg=True), chr(176))

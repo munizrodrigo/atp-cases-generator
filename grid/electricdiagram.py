@@ -24,6 +24,13 @@ class ElectricDiagram(object):
             bus_str = "Bus: {0}<br>"
             bus_str = bus_str.format(str(node))
 
+            z_str = "Zeq: "
+            z_str += "Za = {0}, Zb = {1}, Zc = {2}<br>".format(
+                str(self.feeder.graph.nodes[node]["z"]["A"]),
+                str(self.feeder.graph.nodes[node]["z"]["B"]),
+                str(self.feeder.graph.nodes[node]["z"]["C"]),
+            )
+
             if "source" in self.feeder.graph.nodes[node]:
                 source_str = "Source:<br>"
                 for (code, attr) in self.feeder.graph.nodes[node]["source"].items():
@@ -79,7 +86,7 @@ class ElectricDiagram(object):
             else:
                 surge_str = ""
 
-            text_str = bus_str + source_str + load_str + capacitor_str + surge_arrester_str + surge_str
+            text_str = bus_str + z_str + source_str + load_str + capacitor_str + surge_arrester_str + surge_str
 
             node_text.append(text_str)
 
@@ -127,12 +134,20 @@ class ElectricDiagram(object):
             middle_node_x.append((x0 + x1) / 2)
             middle_node_y.append((y0 + y1) / 2)
 
-            middle_node_str = "Branch: {0}<br>Length = {1:.2f} m, Phase = {2}, Cable = {3}, Pole = {4}".format(
+            str_format = "Branch: {0}<br>"
+            str_format += "Zeq: Za = {1}, Zb = {2}, Zc = {3}, Zn = {4}<br>"
+            str_format += "Length = {5:.2f} m, Phase = {6}, Cable = {7}, Pole = {8}"
+
+            middle_node_str = str_format.format(
                 self.feeder.graph[edge[0]][edge[1]]["code"],
+                self.feeder.graph[edge[0]][edge[1]]["z"]["A"],
+                self.feeder.graph[edge[0]][edge[1]]["z"]["B"],
+                self.feeder.graph[edge[0]][edge[1]]["z"]["C"],
+                self.feeder.graph[edge[0]][edge[1]]["z"]["N"],
                 self.feeder.graph[edge[0]][edge[1]]["length"],
                 self.feeder.graph[edge[0]][edge[1]]["phase"],
-                self.feeder.graph[edge[0]][edge[1]]["cable"],
-                self.feeder.graph[edge[0]][edge[1]]["pole"]
+                next(iter(self.feeder.graph[edge[0]][edge[1]]["cable"].keys())),
+                next(iter(self.feeder.graph[edge[0]][edge[1]]["pole"].keys()))
             )
 
             if "switch" in self.feeder.graph[edge[0]][edge[1]]:
@@ -195,6 +210,13 @@ class ElectricDiagram(object):
             bus_str = "Bus: {0}<br>"
             bus_str = bus_str.format(str(node))
 
+            z_str = "Zeq: "
+            z_str += "Za = {0}, Zb = {1}, Zc = {2}<br>".format(
+                str(self.feeder.graph.nodes[node]["z"]["A"]),
+                str(self.feeder.graph.nodes[node]["z"]["B"]),
+                str(self.feeder.graph.nodes[node]["z"]["C"]),
+            )
+
             if "source" in self.feeder.graph.nodes[node]:
                 source_str = "Source:<br>"
                 for (code, attr) in self.feeder.graph.nodes[node]["source"].items():
@@ -250,7 +272,7 @@ class ElectricDiagram(object):
             else:
                 surge_str = ""
 
-            text_str = bus_str + source_str + load_str + capacitor_str + surge_arrester_str + surge_str
+            text_str = bus_str + z_str + source_str + load_str + capacitor_str + surge_arrester_str + surge_str
 
             node_text.append(text_str)
 
@@ -342,12 +364,20 @@ class ElectricDiagram(object):
             middle_node_x.append((x0 + x1) / 2)
             middle_node_y.append((y0 + y1) / 2)
 
-            middle_node_str = "Branch: {0}<br>Length = {1:.2f} m, Phase = {2}, Cable = {3}, Pole = {4}".format(
+            str_format = "Branch: {0}<br>"
+            str_format += "Zeq: Za = {1}, Zb = {2}, Zc = {3}, Zn = {4}<br>"
+            str_format += "Length = {5:.2f} m, Phase = {6}, Cable = {7}, Pole = {8}"
+
+            middle_node_str = str_format.format(
                 self.feeder.graph[edge[0]][edge[1]]["code"],
+                self.feeder.graph[edge[0]][edge[1]]["z"]["A"],
+                self.feeder.graph[edge[0]][edge[1]]["z"]["B"],
+                self.feeder.graph[edge[0]][edge[1]]["z"]["C"],
+                self.feeder.graph[edge[0]][edge[1]]["z"]["N"],
                 self.feeder.graph[edge[0]][edge[1]]["length"],
                 self.feeder.graph[edge[0]][edge[1]]["phase"],
-                self.feeder.graph[edge[0]][edge[1]]["cable"],
-                self.feeder.graph[edge[0]][edge[1]]["pole"]
+                next(iter(self.feeder.graph[edge[0]][edge[1]]["cable"].keys())),
+                next(iter(self.feeder.graph[edge[0]][edge[1]]["pole"].keys()))
             )
 
             if "switch" in self.feeder.graph[edge[0]][edge[1]]:
@@ -409,6 +439,13 @@ class ElectricDiagram(object):
             bus_str = "Bus: {0}<br>"
             bus_str = bus_str.format(str(node))
 
+            z_str = "Zeq: "
+            z_str += "Za = {0}, Zb = {1}, Zc = {2}<br>".format(
+                str(graph.nodes[node]["z"]["A"]),
+                str(graph.nodes[node]["z"]["B"]),
+                str(graph.nodes[node]["z"]["C"]),
+            )
+
             if "source" in graph.nodes[node]:
                 source_str = "Source:<br>"
                 for (code, attr) in graph.nodes[node]["source"].items():
@@ -464,7 +501,7 @@ class ElectricDiagram(object):
             else:
                 surge_str = ""
 
-            text_str = bus_str + source_str + load_str + capacitor_str + surge_arrester_str + surge_str
+            text_str = bus_str + z_str + source_str + load_str + capacitor_str + surge_arrester_str + surge_str
 
             node_text.append(text_str)
 
@@ -507,12 +544,20 @@ class ElectricDiagram(object):
             middle_node_x.append((x0 + x1) / 2)
             middle_node_y.append((y0 + y1) / 2)
 
-            middle_node_str = "Branch: {0}<br>Length = {1:.2f} m, Phase = {2}, Cable = {3}, Pole = {4}".format(
+            str_format = "Branch: {0}<br>"
+            str_format += "Zeq: Za = {1}, Zb = {2}, Zc = {3}, Zn = {4}<br>"
+            str_format += "Length = {5:.2f} m, Phase = {6}, Cable = {7}, Pole = {8}"
+
+            middle_node_str = str_format.format(
                 graph[edge[0]][edge[1]]["code"],
+                graph[edge[0]][edge[1]]["z"]["A"],
+                graph[edge[0]][edge[1]]["z"]["B"],
+                graph[edge[0]][edge[1]]["z"]["C"],
+                graph[edge[0]][edge[1]]["z"]["N"],
                 graph[edge[0]][edge[1]]["length"],
                 graph[edge[0]][edge[1]]["phase"],
-                graph[edge[0]][edge[1]]["cable"],
-                graph[edge[0]][edge[1]]["pole"]
+                next(iter(graph[edge[0]][edge[1]]["cable"].keys())),
+                next(iter(graph[edge[0]][edge[1]]["pole"].keys()))
             )
 
             if "switch" in graph[edge[0]][edge[1]]:

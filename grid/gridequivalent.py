@@ -44,7 +44,11 @@ class GridEquivalent(object):
         return inductance
 
     @staticmethod
-    def calc_lumped_equivalent_line(branch, cable, pole):
+    def calc_lumped_equivalent_line(branch):
+        cable = next(iter(branch["cable"].values()))
+
+        pole = next(iter(branch["pole"].values()))
+
         length = branch["length"]
 
         rmg = cable["ro"]
@@ -73,14 +77,29 @@ class GridEquivalent(object):
             dist_horiz=dist_horiz
         )
 
-        z_eq = {}
+        z_eq = {
+            "A": None,
+            "B": None,
+            "C": None,
+            "N": None
+        }
+
         for (phase, ind) in zip(branch["phase"], inductance):
             z_eq[phase] = Impedance(R=length*cable["resistivity"], L=ind)
 
         return z_eq
 
     @staticmethod
-    def calc_lumped_equivalent_bus(load_dict, capacitor_dict):
+    def calc_lumped_equivalent_bus(bus):
+        if "load" in bus:
+            load_dict = bus["load"]
+        else:
+            load_dict = {}
+        if "capacitor" in bus:
+            capacitor_dict = bus["capacitor"]
+        else:
+            capacitor_dict = {}
+
         z_eq = {
             "A": None,
             "B": None,

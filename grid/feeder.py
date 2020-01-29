@@ -3,6 +3,7 @@ import networkx as nx
 from copy import deepcopy as copy
 
 from grid.electricdiagram import ElectricDiagram
+from grid.gridequivalent import GridEquivalent
 from exceptions.exceptions import CyclicGraphError
 
 
@@ -22,6 +23,9 @@ class Feeder(object):
         self.generate_graph()
         self.remove_cycles()
         self.organize_feeder()
+
+        self.grid_equivalent = GridEquivalent(feeder=self)
+        self.grid_equivalent.calc_equivalent_impedances()
 
         self.electric_diagram = ElectricDiagram(feeder=self)
         self.electric_diagram.generate_base_figure()
@@ -43,8 +47,8 @@ class Feeder(object):
                 code=branch,
                 length=attributes["length"],
                 phase=attributes["phase"],
-                cable=attributes["cable"],
-                pole=attributes["pole"]
+                cable={attributes["cable"]: self.feeder_dict["cable"][attributes["cable"]]},
+                pole={attributes["pole"]: self.feeder_dict["pole"][attributes["pole"]]}
             )
 
         for (code, attributes) in self.feeder_dict["source"].items():

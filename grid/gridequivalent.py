@@ -6,8 +6,19 @@ from grid.impedance import Impedance
 
 
 class GridEquivalent(object):
-    def __init__(self):
-        pass
+    def __init__(self, feeder):
+        self.feeder = feeder
+
+    def calc_equivalent_impedances(self):
+        for node in self.feeder.graph.nodes():
+            self.feeder.graph.nodes[node]["z"] = GridEquivalent.calc_lumped_equivalent_bus(
+                bus=self.feeder.graph.nodes[node]
+            )
+
+        for (edge_from, edge_to) in self.feeder.graph.edges():
+            self.feeder.graph[edge_from][edge_to]["z"] = GridEquivalent.calc_lumped_equivalent_line(
+                branch=self.feeder.graph[edge_from][edge_to]
+            )
 
     @staticmethod
     def calc_inductance_line(height_struct, sag, length, rmg, dist_horiz):
@@ -44,7 +55,11 @@ class GridEquivalent(object):
         return inductance
 
     @staticmethod
-    def calc_lumped_equivalent_line(branch, cable, pole):
+    def calc_lumped_equivalent_line(branch):
+        cable = next(iter(branch["cable"].values()))
+
+        pole = next(iter(branch["pole"].values()))
+
         length = branch["length"]
 
         rmg = cable["ro"]
@@ -73,8 +88,68 @@ class GridEquivalent(object):
             dist_horiz=dist_horiz
         )
 
-        z_eq = {}
+        z_eq = {
+            "A": None,
+            "B": None,
+            "C": None,
+            "N": None
+        }
+
         for (phase, ind) in zip(branch["phase"], inductance):
             z_eq[phase] = Impedance(R=length*cable["resistivity"], L=ind)
+
+        return z_eq
+
+    @staticmethod
+    def calc_lumped_equivalent_bus(bus):
+        if "load" in bus:
+            load_dict = bus["load"]
+        else:
+            load_dict = {}
+        if "capacitor" in bus:
+            capacitor_dict = bus["capacitor"]
+        else:
+            capacitor_dict = {}
+
+        z_eq = {
+            "A": None,
+            "B": None,
+            "C": None,
+            "N": None
+        }
+
+        for (code, load) in load_dict.items():
+            resistance = [
+                load["ra"],
+                load["rb"],
+                load["rc"]
+            ]
+
+            inductance = [
+                load["la"],
+                load["lb"],
+                load["lc"]
+            ]
+
+            for (phase, R, L) in zip("ABC", resistance, inductance):
+                if phase in load["phase"]:
+                    if z_eq[phase] is None:
+                        z_eq[phase] = Impedance(R=R, L=L)
+                    else:
+                        z_eq[phase] = z_eq[phase] // Impedance(R=R, L=L)
+
+        for (code, capacitor) in capacitor_dict.items():
+            capacitance = [
+                capacitor["ca"],
+                capacitor["cb"],
+                capacitor["cc"]
+            ]
+
+            for (phase, C) in zip("ABC", capacitance):
+                if phase in capacitor["phase"]:
+                    if z_eq[phase] is None:
+                        z_eq[phase] = Impedance(R=0.0, C=C)
+                    else:
+                        z_eq[phase] = z_eq[phase] // Impedance(R=0.0, C=C)
 
         return z_eq

@@ -113,8 +113,8 @@ class Impedance(object):
                 self.C = - float("inf")
 
     def __add__(self, other):
-        z_eq = self.to_frequency(f=self.f).Z + other.to_frequency(f=self.f).z
-        return Impedance(z=z_eq, f=self.f)
+        z_eq = self.to_frequency(f=self.f).Z + other.to_frequency(f=self.f).Z
+        return Impedance(Z=z_eq, f=self.f)
 
     def __radd__(self, other):
         if other == 0:
@@ -123,27 +123,27 @@ class Impedance(object):
             return self.__add__(other)
 
     def __sub__(self, other):
-        z_eq = self.to_frequency(f=self.f).Z - other.to_frequency(f=self.f).z
-        return Impedance(z=z_eq, f=self.f)
+        z_eq = self.to_frequency(f=self.f).Z - other.to_frequency(f=self.f).Z
+        return Impedance(Z=z_eq, f=self.f)
 
     def __mul__(self, other):
-        z_eq = self.to_frequency(f=self.f).Z * other.to_frequency(f=self.f).z
-        return Impedance(z=z_eq, f=self.f)
+        z_eq = self.to_frequency(f=self.f).Z * other.to_frequency(f=self.f).Z
+        return Impedance(Z=z_eq, f=self.f)
 
     def __truediv__(self, other):
         try:
-            z_eq = self.to_frequency(f=self.f).Z / other.to_frequency(f=self.f).z
+            z_eq = self.to_frequency(f=self.f).Z / other.to_frequency(f=self.f).Z
         except ZeroDivisionError:
             z_eq = complex("inf")
-        return Impedance(z=z_eq, f=self.f)
+        return Impedance(Z=z_eq, f=self.f)
 
     def __floordiv__(self, other):
         try:
-            z_eq = (1 / self.to_frequency(f=self.f).Z) + (1 / other.to_frequency(f=self.f).z)
+            z_eq = (1 / self.to_frequency(f=self.f).Z) + (1 / other.to_frequency(f=self.f).Z)
             z_eq = 1 / z_eq
         except ZeroDivisionError:
             z_eq = 0.0
-        return Impedance(z=z_eq, f=self.f)
+        return Impedance(Z=z_eq, f=self.f)
 
     def __abs__(self):
         return abs(self.Z)
@@ -152,7 +152,7 @@ class Impedance(object):
         return False if self.Z == complex(0.0, 0.0) else True
 
     def __eq__(self, other):
-        return self.to_frequency(f=self.f).Z == other.to_frequency(f=self.f).z
+        return self.to_frequency(f=self.f).Z == other.to_frequency(f=self.f).Z
 
     def __lt__(self, other):
         return abs(self.to_frequency(f=self.f)) < abs(other.to_frequency(f=self.f))
@@ -170,7 +170,7 @@ class Impedance(object):
         return "{0}+j{1} at f = {2} Hz".format(self.R, self.X, self.f)
 
     def to_frequency(self, f):
-        return Impedance(r=self.R, l=self.L, f=f)
+        return Impedance(R=self.R, L=self.L, f=f)
 
     def to_polar_str(self):
         return "{0} /_ {1}{2} ".format(abs(self), angle(self.Z, deg=True), chr(176))

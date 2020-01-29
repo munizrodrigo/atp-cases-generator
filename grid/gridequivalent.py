@@ -78,3 +78,48 @@ class GridEquivalent(object):
             z_eq[phase] = Impedance(R=length*cable["resistivity"], L=ind)
 
         return z_eq
+
+    @staticmethod
+    def calc_lumped_equivalent_bus(load_dict, capacitor_dict):
+        z_eq = {
+            "A": None,
+            "B": None,
+            "C": None,
+            "N": None
+        }
+
+        for (code, load) in load_dict.items():
+            resistance = [
+                load["ra"],
+                load["rb"],
+                load["rc"]
+            ]
+
+            inductance = [
+                load["la"],
+                load["lb"],
+                load["lc"]
+            ]
+
+            for (phase, R, L) in zip("ABC", resistance, inductance):
+                if phase in load["phase"]:
+                    if z_eq[phase] is None:
+                        z_eq[phase] = Impedance(R=R, L=L)
+                    else:
+                        z_eq[phase] = z_eq[phase] // Impedance(R=R, L=L)
+
+        for (code, capacitor) in capacitor_dict.items():
+            capacitance = [
+                capacitor["ca"],
+                capacitor["cb"],
+                capacitor["cc"]
+            ]
+
+            for (phase, C) in zip("ABC", capacitance):
+                if phase in capacitor["phase"]:
+                    if z_eq[phase] is None:
+                        z_eq[phase] = Impedance(R=0.0, C=C)
+                    else:
+                        z_eq[phase] = z_eq[phase] // Impedance(R=0.0, C=C)
+
+        return z_eq

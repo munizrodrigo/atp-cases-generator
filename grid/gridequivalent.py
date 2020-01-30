@@ -1,5 +1,7 @@
 from math import sqrt, log10
 
+from networkx import DiGraph, to_dict_of_lists
+
 from numpy import spacing as min_delta
 
 from grid.impedance import Impedance
@@ -8,6 +10,8 @@ from grid.impedance import Impedance
 class GridEquivalent(object):
     def __init__(self, feeder):
         self.feeder = feeder
+        self.equivalent_graphs = None
+        self.equivalent_trees = None
 
     def calc_equivalent_impedances(self):
         for node in self.feeder.graph.nodes():
@@ -19,6 +23,15 @@ class GridEquivalent(object):
             self.feeder.graph[edge_from][edge_to]["z"] = GridEquivalent.calc_lumped_equivalent_line(
                 branch=self.feeder.graph[edge_from][edge_to]
             )
+
+    def generate_trees(self):
+        self.equivalent_trees = []
+        for graph in self.feeder.equivalent_graphs:
+            tree = DiGraph()
+            tree.add_nodes_from(graph)
+            tree.add_edges_from(graph.edges)
+            tree = to_dict_of_lists(tree)
+            self.equivalent_trees.append(tree)
 
     @staticmethod
     def calc_inductance_line(height_struct, sag, length, rmg, dist_horiz):

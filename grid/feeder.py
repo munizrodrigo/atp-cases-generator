@@ -217,6 +217,7 @@ class Feeder(object):
                 self.graph[node_from][node_to]["area"] = False
 
         self.generate_equivalent_graphs()
+        self.grid_equivalent.generate_trees()
 
     def generate_equivalent_graphs(self):
         equivalent_graph = copy(self.graph)

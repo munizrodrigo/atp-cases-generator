@@ -249,6 +249,15 @@ class Feeder(object):
         equivalents = list(nx.connected_components(nx.to_undirected(copy(equivalent_graph))))
         equivalents = [list(eq) for eq in equivalents]
 
+        sorted_equivalents = [[None]] * len(equivalents)
+        for eq in equivalents:
+            for node in eq:
+                if "EQ" in node:
+                    position = int(node.split(" ")[-1])
+                    sorted_equivalents[position] = copy(eq)
+
+        equivalents = copy(sorted_equivalents)
+
         self.equivalent_graphs = []
         for eq in equivalents:
             self.equivalent_graphs.append(equivalent_graph.subgraph(eq).copy())

@@ -159,8 +159,8 @@ class Feeder(object):
         graph_undirected = nx.to_undirected(graph=self.graph)
         graph_list = nx.to_dict_of_lists(G=self.graph)
         out_edge_list = []
-        for (bus, adj) in graph_list.items():
-            if not adj:
+        for bus in graph_list.keys():
+            if self.graph.degree[bus] == 1 and not bus == self.main_source_bus:
                 out_edge_list.append(bus)
             for node in out_edge_list:
                 path = nx.shortest_path(G=graph_undirected, source=self.main_source_bus, target=node)

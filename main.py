@@ -102,7 +102,7 @@ def main():
 
         fig_base = feeder.electric_diagram.base_figure
 
-        feeder.define_area("852", lim=20)
+        feeder.define_area("800", lim=20)
         feeder.electric_diagram.generate_area_figure()
         fig_area = feeder.electric_diagram.area_figure
 

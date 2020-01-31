@@ -1,6 +1,8 @@
 from math import sqrt, log10
 
-from networkx import DiGraph, to_dict_of_lists
+from copy import deepcopy as copy
+
+from networkx import to_dict_of_lists
 
 from numpy import spacing as min_delta
 
@@ -10,8 +12,8 @@ from grid.impedance import Impedance
 class GridEquivalent(object):
     def __init__(self, feeder):
         self.feeder = feeder
-        self.equivalent_graphs = None
         self.equivalent_trees = None
+        self.equivalent_values = None
 
     def calc_equivalent_impedances(self):
         for node in self.feeder.graph.nodes():
@@ -26,12 +28,73 @@ class GridEquivalent(object):
 
     def generate_trees(self):
         self.equivalent_trees = []
-        for graph in self.feeder.equivalent_graphs:
-            tree = DiGraph()
-            tree.add_nodes_from(graph)
-            tree.add_edges_from(graph.edges)
-            tree = to_dict_of_lists(tree)
+        for (n_eq, (start_bus, graph)) in enumerate(zip(self.feeder.bus_frontier, self.feeder.equivalent_graphs)):
+            start_bus_eq = "{0} - EQ: {1}".format(start_bus, n_eq)
+            graph_dict = to_dict_of_lists(graph)
+            tree = GridEquivalent.build_tree(bus_code=start_bus_eq, parent_bus_code=start_bus_eq, graph_dict=graph_dict)
             self.equivalent_trees.append(tree)
+
+    @staticmethod
+    def build_tree(bus_code, parent_bus_code, graph_dict):
+        adj = []
+        for u in graph_dict[bus_code]:
+            if u != parent_bus_code:
+                b = GridEquivalent.build_tree(bus_code=u, parent_bus_code=parent_bus_code, graph_dict=graph_dict)
+                adj.append(b)
+        bus = {"bus": bus_code, "adj": adj}
+        return bus
+
+    def generate_equivalents(self):
+        self.equivalent_values = []
+        for (n, (eq_graph, eq_tree)) in enumerate(zip(self.feeder.equivalent_graphs, self.equivalent_trees)):
+            if self.feeder.main_source_bus not in eq_graph.nodes():
+                z_eq = self.calc_equivalent(bus=eq_tree, eq_graph=eq_graph, start_bus=True)
+                self.equivalent_values.append(z_eq)
+        self.feeder.equivalent_values = self.equivalent_values
+
+    def calc_equivalent(self, bus, eq_graph, start_bus=False):
+        if start_bus:
+            bus["zeq"] = {"A": None, "B": None, "C": None, "N": None}
+        else:
+            bus["zeq"] = copy(eq_graph.nodes[bus["bus"]]["z"])
+        if len(bus["adj"]) != 0:
+            equivalent = []
+
+            for bus_next in bus["adj"]:
+                z_branch = eq_graph[bus["bus"]][bus_next["bus"]]["z"]
+                bus_next["zeq"] = self.calc_equivalent(bus=bus_next, eq_graph=eq_graph)
+                equivalent.append(GridEquivalent.series(z_branch, bus_next["zeq"]))
+
+            equivalent.append(bus["zeq"])
+            bus["zeq"] = equivalent[0]
+            for eq in equivalent[1:]:
+                bus["zeq"] = GridEquivalent.parallel(z1=bus["zeq"], z2=eq)
+
+        return bus["zeq"]
+
+    @staticmethod
+    def series(z1, z2):
+        result = {"A": None, "B": None, "C": None, "N": None}
+        for phase in "ABCN":
+            if z1[phase] is None:
+                result[phase] = z2[phase]
+            elif z2[phase] is None:
+                result[phase] = z1[phase]
+            else:
+                result[phase] = z1[phase] + z2[phase]
+        return result
+
+    @staticmethod
+    def parallel(z1, z2):
+        result = {"A": None, "B": None, "C": None, "N": None}
+        for phase in "ABCN":
+            if z1[phase] is None:
+                result[phase] = z2[phase]
+            elif z2[phase] is None:
+                result[phase] = z1[phase]
+            else:
+                result[phase] = z1[phase] // z2[phase]
+        return result
 
     @staticmethod
     def calc_inductance_line(height_struct, sag, length, rmg, dist_horiz):

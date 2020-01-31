@@ -17,6 +17,7 @@ class Feeder(object):
         self.edge_frontier = None
         self.bus_frontier = None
         self.equivalent_graphs = None
+        self.equivalent_values = None
         self.electric_diagram = None
 
         self.define_main_source_bus()
@@ -218,6 +219,7 @@ class Feeder(object):
 
         self.generate_equivalent_graphs()
         self.grid_equivalent.generate_trees()
+        self.grid_equivalent.generate_equivalents()
 
     def generate_equivalent_graphs(self):
         equivalent_graph = copy(self.graph)

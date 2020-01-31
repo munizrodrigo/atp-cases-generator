@@ -180,7 +180,7 @@ class Feeder(object):
         graph_undirected = nx.to_undirected(graph=self.graph)
         self.bus_area = []
         self.bus_area.append(self.center_bus)
-        next_adj = list(dict(graph_undirected[self.center_bus]).keys())
+        next_adj = sorted(list(dict(graph_undirected[self.center_bus]).keys()))
         while True:
             adj = copy(next_adj)
             next_adj = []
@@ -188,7 +188,7 @@ class Feeder(object):
                 if bus not in self.bus_area and len(self.bus_area) < lim:
                     self.bus_area.append(bus)
                     next_adj.extend(list(dict(graph_undirected[bus]).keys()))
-            next_adj = list(dict.fromkeys(next_adj))
+            next_adj = sorted(list(dict.fromkeys(next_adj)))
             for bus in self.bus_area:
                 if bus in next_adj:
                     next_adj.remove(bus)

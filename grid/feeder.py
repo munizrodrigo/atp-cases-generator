@@ -17,6 +17,7 @@ class Feeder(object):
         self.edge_frontier = None
         self.bus_frontier = None
         self.equivalent_graphs = None
+        self.equivalent_values = None
         self.electric_diagram = None
 
         self.define_main_source_bus()
@@ -159,8 +160,8 @@ class Feeder(object):
         graph_undirected = nx.to_undirected(graph=self.graph)
         graph_list = nx.to_dict_of_lists(G=self.graph)
         out_edge_list = []
-        for (bus, adj) in graph_list.items():
-            if not adj:
+        for bus in graph_list.keys():
+            if self.graph.degree[bus] == 1 and not bus == self.main_source_bus:
                 out_edge_list.append(bus)
             for node in out_edge_list:
                 path = nx.shortest_path(G=graph_undirected, source=self.main_source_bus, target=node)
@@ -180,7 +181,7 @@ class Feeder(object):
         graph_undirected = nx.to_undirected(graph=self.graph)
         self.bus_area = []
         self.bus_area.append(self.center_bus)
-        next_adj = list(dict(graph_undirected[self.center_bus]).keys())
+        next_adj = sorted(list(dict(graph_undirected[self.center_bus]).keys()))
         while True:
             adj = copy(next_adj)
             next_adj = []
@@ -188,7 +189,7 @@ class Feeder(object):
                 if bus not in self.bus_area and len(self.bus_area) < lim:
                     self.bus_area.append(bus)
                     next_adj.extend(list(dict(graph_undirected[bus]).keys()))
-            next_adj = list(dict.fromkeys(next_adj))
+            next_adj = sorted(list(dict.fromkeys(next_adj)))
             for bus in self.bus_area:
                 if bus in next_adj:
                     next_adj.remove(bus)
@@ -217,6 +218,8 @@ class Feeder(object):
                 self.graph[node_from][node_to]["area"] = False
 
         self.generate_equivalent_graphs()
+        self.grid_equivalent.generate_trees()
+        self.grid_equivalent.generate_equivalents()
 
     def generate_equivalent_graphs(self):
         equivalent_graph = copy(self.graph)
@@ -247,6 +250,15 @@ class Feeder(object):
 
         equivalents = list(nx.connected_components(nx.to_undirected(copy(equivalent_graph))))
         equivalents = [list(eq) for eq in equivalents]
+
+        sorted_equivalents = [[None]] * len(equivalents)
+        for eq in equivalents:
+            for node in eq:
+                if "EQ" in node:
+                    position = int(node.split(" ")[-1])
+                    sorted_equivalents[position] = copy(eq)
+
+        equivalents = copy(sorted_equivalents)
 
         self.equivalent_graphs = []
         for eq in equivalents:

@@ -39,7 +39,7 @@ class Feeder(object):
     def generate_graph(self):
         self.graph = nx.DiGraph()
         for (bus, attributes) in self.feeder_dict["bus"].items():
-            self.graph.add_node(node_for_adding=bus, pos=(attributes["x"], attributes["y"]))
+            self.graph.add_node(node_for_adding=bus, pos=(attributes["x"], attributes["y"]), phase="")
 
         for (branch, attributes) in self.feeder_dict["branch"].items():
             self.graph.add_edge(
@@ -51,6 +51,12 @@ class Feeder(object):
                 cable={attributes["cable"]: self.feeder_dict["cable"][attributes["cable"]]},
                 pole={attributes["pole"]: self.feeder_dict["pole"][attributes["pole"]]}
             )
+
+        for edge in self.graph.edges():
+            if len(self.graph.edges[edge]["phase"]) > len(self.graph.nodes[edge[0]]["phase"]):
+                self.graph.nodes[edge[0]]["phase"] = copy(self.graph.edges[edge]["phase"])
+            if len(self.graph.edges[edge]["phase"]) > len(self.graph.nodes[edge[1]]["phase"]):
+                self.graph.nodes[edge[1]]["phase"] = copy(self.graph.edges[edge]["phase"])
 
         for (code, attributes) in self.feeder_dict["source"].items():
             try:

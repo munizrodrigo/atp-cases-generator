@@ -1,7 +1,8 @@
 import pprint
 
 from sys import argv
-from os.path import abspath, splitext
+from os import makedirs
+from os.path import abspath, splitext, isdir, join, dirname
 
 from configuration.config import Configuration
 from argument.arg import Argument
@@ -9,6 +10,7 @@ from input.input_txt import define_input_dict as define_input_dict_txt
 from input.input_xlsx import define_input_dict as define_input_dict_xlsx
 from input.input_dict import define_input_dict as define_input_dict_json
 from grid.feeder import Feeder
+from atp.casegenerator import CaseGenerator
 from exceptions.exceptions import *
 
 
@@ -102,9 +104,26 @@ def main():
 
         fig_base = feeder.electric_diagram.base_figure
 
-        feeder.define_area("830", lim=18)
+        if args.out:
+            output_path = abspath(args.out)
+            if not isdir(output_path):
+                makedirs(output_path)
+        else:
+            if args.inp:
+                output_path = abspath(join(dirname(args.inp), "output"))
+                if not isdir(output_path):
+                    makedirs(output_path)
+            elif args.dict:
+                output_path = abspath(join(dirname(args.dict), "output"))
+                if not isdir(output_path):
+                    makedirs(output_path)
+
+        feeder.define_area("830", lim=args.cov)
         feeder.electric_diagram.generate_area_figure()
         fig_area = feeder.electric_diagram.area_figure
+
+        case = CaseGenerator(feeder=feeder)
+        case.generate_base_card(simulation_path=output_path)
 
         fig_base.show()
         fig_area.show()

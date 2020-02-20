@@ -43,7 +43,6 @@ class Argument(object):
             "-o",
             "--out",
             action="store",
-            default=config["path"]["script_dir"],
             type=str,
             help="set the directory of output files",
             metavar="PATH"

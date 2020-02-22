@@ -11,6 +11,7 @@ from input.input_xlsx import define_input_dict as define_input_dict_xlsx
 from input.input_dict import define_input_dict as define_input_dict_json
 from grid.feeder import Feeder
 from atp.casegenerator import CaseGenerator
+from atp.executor import ATPExecutor
 from exceptions.exceptions import *
 
 
@@ -124,6 +125,16 @@ def main():
 
         case = CaseGenerator(feeder=feeder)
         case.generate_base_card(simulation_path=output_path)
+
+        ATPExecutor.execute_atp(
+            folder_path=output_path,
+            atp_filename="base_feeder",
+            execution_cmd="D:\\ATP\\tools\\runATP.exe"
+        )
+
+        output = ATPExecutor.read_pl4(pl4_file=join(output_path, "base_feeder.pl4"))
+
+        print(output["misc"])
 
         fig_base.show()
         fig_area.show()

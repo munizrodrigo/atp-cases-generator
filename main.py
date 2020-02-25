@@ -1,8 +1,11 @@
 import pprint
+import pickle
 
 from sys import argv
 from os import makedirs
 from os.path import abspath, splitext, isdir, join, dirname
+from plotly.io.orca import config as orca_config
+from plotly.offline import plot as offline_plot
 
 from configuration.config import Configuration
 from argument.arg import Argument
@@ -126,18 +129,26 @@ def main():
         case = CaseGenerator(feeder=feeder)
         case.generate_base_card(simulation_path=output_path)
 
-        ATPExecutor.execute_atp(
-            folder_path=output_path,
-            atp_filename="base_feeder",
-            execution_cmd="D:\\ATP\\tools\\runATP.exe"
-        )
+        if args.exec:
+            ATPExecutor.execute_atp(
+                folder_path=output_path,
+                atp_filename="base_feeder",
+                execution_cmd="D:\\ATP\\tools\\runATP.exe"
+            )
 
-        output = ATPExecutor.read_pl4(pl4_file=join(output_path, "base_feeder.pl4"))
+            output = ATPExecutor.read_pl4(pl4_file=join(output_path, "base_feeder.pl4"))
 
-        print(output["misc"])
+            with open(join(output_path, "output.pckl"), "wb") as output_pckl:
+                pickle.dump(output, output_pckl)
 
-        fig_base.show()
-        fig_area.show()
+        if args.graph:
+            orca_config.executable = join(dirname(abspath(__file__)), "orca", "orca.exe")
+
+            fig_base.write_image(join(output_path, "base_feeder.png"))
+            fig_area.write_image(join(output_path, "area_feeder.png"))
+
+            offline_plot(fig_base, filename=join(output_path, "base_feeder.html"), auto_open=False)
+            offline_plot(fig_area, filename=join(output_path, "area_feeder.html"), auto_open=False)
 
     else:
         args = cmd.parser.parse_args(["-h"])

@@ -49,7 +49,7 @@ class CaseGenerator(object):
         self.surge_arrester = []
         self.surge_arrester_ground = []
 
-    def generate_base_card(self, simulation_path, create_file=True, overwrite_line=True):
+    def generate_base_card(self, simulation_path, create_file=True, overwrite_line=True, deltat=1e-8, tmax=0.01):
         self.generate_bus()
 
         self.generate_elements()
@@ -80,8 +80,8 @@ class CaseGenerator(object):
         self.atp_card_base.generate_card()
         self.atp_card_base.generate_header()
         self.atp_card_base.generate_miscellaneous_float(
-            deltat=1e-8,
-            tmax=0.02,
+            deltat=deltat,
+            tmax=tmax,
             xopt=0,
             copt=0,
             epsiln=0

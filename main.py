@@ -123,7 +123,7 @@ def main():
         fig_area = feeder.electric_diagram.area_figure
 
         case = CaseGenerator(feeder=feeder)
-        case.generate_base_card(simulation_path=output_path)
+        case.generate_base_card(simulation_path=output_path, deltat=args.step, tmax=args.tmax)
 
         fig_base.show()
         fig_area.show()

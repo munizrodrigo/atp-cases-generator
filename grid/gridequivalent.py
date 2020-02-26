@@ -1,4 +1,4 @@
-from math import sqrt, log10
+from math import sqrt, log10, pi
 
 from copy import deepcopy as copy
 
@@ -13,6 +13,8 @@ from grid.impedance import Impedance
 
 
 class GridEquivalent(object):
+    correction_factor = 1.02
+
     def __init__(self, feeder):
         self.feeder = feeder
         self.equivalent_trees = None
@@ -262,7 +264,10 @@ class GridEquivalent(object):
         }
 
         for (phase, ind) in zip(branch["phase"], inductance):
-            z_eq[phase] = Impedance(R=length * cable["resistivity"], L=ind)
+            z_eq[phase] = Impedance(
+                R=GridEquivalent.correction_factor * ((length * cable["resistivity"]) / (pi * (rmg ** 2))),
+                L=ind
+            )
 
         return z_eq
 

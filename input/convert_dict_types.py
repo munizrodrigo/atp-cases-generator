@@ -41,12 +41,6 @@ def convert_dict_types(input_dict):
                 "phase": str,
                 "s": float,
                 "fp": float,
-                "ra": float,
-                "rb": float,
-                "rc": float,
-                "la": float,
-                "lb": float,
-                "lc": float
             }
         elif case == "capacitor":
             list_types = {

@@ -1,3 +1,4 @@
+import json
 import pprint
 import pickle
 
@@ -128,6 +129,13 @@ def main():
 
         case = CaseGenerator(feeder=feeder)
         case.generate_base_card(simulation_path=output_path, deltat=args.step, tmax=args.tmax)
+
+        dict_bus = {}
+        for bus in case.bus:
+            dict_bus[bus.name] = bus.node
+
+        with open(join(output_path, "bus_names.json"), "w") as bus_names:
+            json.dump(obj=dict_bus, fp=bus_names, indent=4, sort_keys=True)
 
         if args.exec:
             ATPExecutor.execute_atp(

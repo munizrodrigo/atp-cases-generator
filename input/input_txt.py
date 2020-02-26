@@ -1,5 +1,7 @@
 from re import sub as remove_spaces
 
+from math import sqrt, acos, sin, pi
+
 from input.convert_dict_types import convert_dict_types
 
 
@@ -112,18 +114,12 @@ def define_load(input_file_lines):
             is_load = True
     load_dict = {}
     for line in load_lines:
-        (code, bus, phase, s, fp, ra, rb, rc, la, lb, lc) = tuple(line.split(","))
+        (code, bus, phase, s, fp) = tuple(line.split(","))
         load_dict[str(code).strip()] = {
             "bus": str(bus).strip(),
             "phase": str(phase).strip(),
             "s": str(s).strip(),
             "fp": str(fp).strip(),
-            "ra": str(ra).strip(),
-            "rb": str(rb).strip(),
-            "rc": str(rc).strip(),
-            "la": str(la).strip(),
-            "lb": str(lb).strip(),
-            "lc": str(lc).strip(),
         }
     return load_dict
 
@@ -280,4 +276,24 @@ def define_input_dict(input_file):
         "surge": define_surge(input_file_lines)
     }
     input_dict = convert_dict_types(input_dict=input_dict)
+    for (code, load) in input_dict["load"].items():
+        vrms = next(iter(input_dict["feeder"].values()))["vrms"]
+        f = next(iter(input_dict["source"].values()))["frequency"]
+        r, l = calculate_impedance_load(s=load["s"], fp=load["fp"], vrms=vrms, f=f, n_phases=len(load["phase"]))
+        input_dict["load"][code]["ra"] = float(r) if "A" in load["phase"] else 0.0
+        input_dict["load"][code]["rb"] = float(r) if "B" in load["phase"] else 0.0
+        input_dict["load"][code]["rc"] = float(r) if "C" in load["phase"] else 0.0
+        input_dict["load"][code]["la"] = float(l) if "A" in load["phase"] else 0.0
+        input_dict["load"][code]["lb"] = float(l) if "B" in load["phase"] else 0.0
+        input_dict["load"][code]["lc"] = float(l) if "C" in load["phase"] else 0.0
     return input_dict
+
+
+def calculate_impedance_load(s, fp, vrms, f, n_phases):
+    v = vrms / sqrt(3) if n_phases == 1 else vrms
+    p = s * fp
+    z = (v ** 2 / p) * fp
+    theta = acos(fp)
+    r = z * fp
+    l = (z * sin(theta)) / (2 * pi * f)
+    return r, l

@@ -24,7 +24,8 @@ def convert_dict_types(input_dict):
                 "length": float,
                 "phase": str,
                 "cable": str,
-                "pole": str
+                "pole": str,
+                "rho": float
             }
         elif case == "source":
             list_types = {
@@ -32,7 +33,7 @@ def convert_dict_types(input_dict):
                 "bus": str,
                 "vrms": float,
                 "frequency": float,
-                "phase": str,
+                "phase": str
             }
         elif case == "load":
             list_types = {
@@ -40,7 +41,7 @@ def convert_dict_types(input_dict):
                 "bus": str,
                 "phase": str,
                 "s": float,
-                "fp": float,
+                "fp": float
             }
         elif case == "capacitor":
             list_types = {
@@ -58,7 +59,7 @@ def convert_dict_types(input_dict):
                 "from": str,
                 "to": str,
                 "tclose": float,
-                "topen": float,
+                "topen": float
             }
         elif case == "pole":
             list_types = {

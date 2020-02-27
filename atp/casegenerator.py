@@ -31,7 +31,6 @@ class CaseGenerator(object):
     r = 0.01905 / 2
     l = 9.6
     ro = 120
-    rho = 120
 
     def __init__(self, feeder):
         self.feeder = feeder
@@ -397,7 +396,7 @@ class CaseGenerator(object):
                                     )
                                 )
 
-    def generate_line(self, simulation_path, rho=120, overwrite=False, min_lim_km=0.01):
+    def generate_line(self, simulation_path, overwrite=False, min_lim_km=0.01):
         for (edge_from, edge_to) in self.feeder.graph.edges():
             branch = self.feeder.graph[edge_from][edge_to]
             if branch["area"]:
@@ -456,7 +455,7 @@ class CaseGenerator(object):
                     bus_pos=bus_pos,
                     bus_neg=bus_neg,
                     dat_name=bus_neg.node.lower() + "_" + bus_pos.node.lower(),
-                    rho=rho,
+                    rho=branch["rho"],
                     simulation_path=simulation_path,
                     run_cmd="D:\\ATP\\tools\\runATP.exe",
                     overwrite=overwrite

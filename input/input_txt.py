@@ -68,14 +68,15 @@ def define_branch(input_file_lines):
             is_branch = True
     branch_dict = {}
     for line in branch_lines:
-        (code, bus_from, bus_to, length, phase, cable, pole) = tuple(line.split(","))
+        (code, bus_from, bus_to, length, phase, cable, pole, rho) = tuple(line.split(","))
         branch_dict[str(code).strip()] = {
             "from": str(bus_from).strip(),
             "to": str(bus_to).strip(),
             "length": str(length).strip(),
             "phase": str(phase).strip(),
             "cable": str(cable).strip(),
-            "pole": str(pole).strip()
+            "pole": str(pole).strip(),
+            "rho": str(rho).strip()
         }
     return branch_dict
 

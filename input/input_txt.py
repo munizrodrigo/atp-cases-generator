@@ -232,9 +232,12 @@ def define_surge_arrester(input_file_lines):
             is_surge_arrester = True
     surge_arrester_dict = {}
     for line in surge_arrester_lines:
-        (code, bus) = tuple(line.split(","))
+        (code, bus, diameter, length, ro) = tuple(line.split(","))
         surge_arrester_dict[str(code).strip()] = {
-            "bus": str(bus).strip()
+            "bus": str(bus).strip(),
+            "diameter": str(diameter).strip(),
+            "length": str(length).strip(),
+            "ro": str(ro).strip()
         }
     return surge_arrester_dict
 

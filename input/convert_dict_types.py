@@ -79,7 +79,10 @@ def convert_dict_types(input_dict):
         elif case == "surge_arrester":
             list_types = {
                 "code": str,
-                "bus": str
+                "bus": str,
+                "diameter": float,
+                "length": float,
+                "ro": float,
             }
         elif case == "surge":
             list_types = {

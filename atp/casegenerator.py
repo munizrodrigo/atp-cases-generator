@@ -28,10 +28,6 @@ def create_atp_file(atp_card, folder_path, atp_filename):
 
 
 class CaseGenerator(object):
-    r = 0.01905 / 2
-    l = 9.6
-    ro = 120
-
     def __init__(self, feeder):
         self.feeder = feeder
         self.atp_card_base = ATPCard()
@@ -577,9 +573,9 @@ class CaseGenerator(object):
                             self.surge_arrester_ground.append(
                                 Ground(
                                     bus_pos=bus_obj_ground,
-                                    r=CaseGenerator.r,
-                                    l=CaseGenerator.l,
-                                    ro=CaseGenerator.ro,
+                                    r=(surge_arrester["diameter"] / 2),
+                                    l=surge_arrester["length"],
+                                    ro=surge_arrester["ro"],
                                     phase_pos="A",
                                     gndnumber=int(ground_number)
                                 )
@@ -604,9 +600,9 @@ class CaseGenerator(object):
                             self.surge_arrester_ground.append(
                                 Ground(
                                     bus_pos=bus_obj_ground,
-                                    r=CaseGenerator.r,
-                                    l=CaseGenerator.l,
-                                    ro=CaseGenerator.ro,
+                                    r=(surge_arrester["diameter"] / 2),
+                                    l=surge_arrester["length"],
+                                    ro=surge_arrester["ro"],
                                     phase_pos="B",
                                     gndnumber=int(ground_number)
                                 )
@@ -631,9 +627,9 @@ class CaseGenerator(object):
                             self.surge_arrester_ground.append(
                                 Ground(
                                     bus_pos=bus_obj_ground,
-                                    r=CaseGenerator.r,
-                                    l=CaseGenerator.l,
-                                    ro=CaseGenerator.ro,
+                                    r=(surge_arrester["diameter"] / 2),
+                                    l=surge_arrester["length"],
+                                    ro=surge_arrester["ro"],
                                     phase_pos="C",
                                     gndnumber=int(ground_number)
                                 )

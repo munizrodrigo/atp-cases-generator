@@ -161,7 +161,18 @@ def main():
 
             output = ATPExecutor.read_pl4(pl4_file=join(output_path, "base_feeder.pl4"))
 
-            with open(join(output_path, "output.pckl"), "wb") as output_pckl:
+            with open(join(output_path, "base_feeder_output.pckl"), "wb") as output_pckl:
+                pickle.dump(output, output_pckl)
+
+            ATPExecutor.execute_atp(
+                folder_path=output_path,
+                atp_filename="surge_feeder",
+                execution_cmd=execution_cmd
+            )
+
+            output = ATPExecutor.read_pl4(pl4_file=join(output_path, "surge_feeder.pl4"))
+
+            with open(join(output_path, "surge_feeder_output.pckl"), "wb") as output_pckl:
                 pickle.dump(output, output_pckl)
 
         if args.graph:

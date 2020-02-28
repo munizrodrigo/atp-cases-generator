@@ -1,6 +1,6 @@
 import pandas as pd
 
-from math import sqrt, acos, sin, pi
+from input.calculate_impedance_load import calculate_impedance_load
 
 from input.convert_dict_types import convert_dict_types
 
@@ -36,12 +36,3 @@ def define_input_dict(input_file):
         input_dict["load"][code]["lc"] = float(l) if "C" in load["phase"] else 0.0
     return input_dict
 
-
-def calculate_impedance_load(s, fp, vrms, f, n_phases):
-    v = vrms / sqrt(3) if n_phases == 1 else vrms
-    p = s * fp
-    z = (v ** 2 / p) * fp
-    theta = acos(fp)
-    r = z * fp
-    l = (z * sin(theta)) / (2 * pi * f)
-    return r, l

@@ -28,11 +28,6 @@ def create_atp_file(atp_card, folder_path, atp_filename):
 
 
 class CaseGenerator(object):
-    r = 0.01905 / 2
-    l = 9.6
-    ro = 120
-    rho = 120
-
     def __init__(self, feeder):
         self.feeder = feeder
         self.atp_card_base = ATPCard()
@@ -49,13 +44,15 @@ class CaseGenerator(object):
         self.surge_arrester = []
         self.surge_arrester_ground = []
 
-    def generate_base_card(self, simulation_path, create_file=True, overwrite_line=True, deltat=1e-8, tmax=0.01):
+    def generate_base_card(self, simulation_path, execution_cmd, create_file=True, overwrite_line=True, deltat=1e-8,
+                           tmax=0.01):
         self.generate_bus()
 
         self.generate_elements()
 
         self.generate_line(
             simulation_path=simulation_path,
+            execution_cmd=execution_cmd,
             overwrite=overwrite_line
         )
 
@@ -397,7 +394,7 @@ class CaseGenerator(object):
                                     )
                                 )
 
-    def generate_line(self, simulation_path, rho=120, overwrite=False, min_lim_km=0.01):
+    def generate_line(self, simulation_path, execution_cmd, overwrite=False, min_lim_km=0.01):
         for (edge_from, edge_to) in self.feeder.graph.edges():
             branch = self.feeder.graph[edge_from][edge_to]
             if branch["area"]:
@@ -456,9 +453,9 @@ class CaseGenerator(object):
                     bus_pos=bus_pos,
                     bus_neg=bus_neg,
                     dat_name=bus_neg.node.lower() + "_" + bus_pos.node.lower(),
-                    rho=rho,
+                    rho=branch["rho"],
                     simulation_path=simulation_path,
-                    run_cmd="D:\\ATP\\tools\\runATP.exe",
+                    run_cmd=execution_cmd,
                     overwrite=overwrite
                 )
                 self.line.append(lcc)
@@ -578,9 +575,9 @@ class CaseGenerator(object):
                             self.surge_arrester_ground.append(
                                 Ground(
                                     bus_pos=bus_obj_ground,
-                                    r=CaseGenerator.r,
-                                    l=CaseGenerator.l,
-                                    ro=CaseGenerator.ro,
+                                    r=(surge_arrester["diameter"] / 2),
+                                    l=surge_arrester["length"],
+                                    ro=surge_arrester["ro"],
                                     phase_pos="A",
                                     gndnumber=int(ground_number)
                                 )
@@ -605,9 +602,9 @@ class CaseGenerator(object):
                             self.surge_arrester_ground.append(
                                 Ground(
                                     bus_pos=bus_obj_ground,
-                                    r=CaseGenerator.r,
-                                    l=CaseGenerator.l,
-                                    ro=CaseGenerator.ro,
+                                    r=(surge_arrester["diameter"] / 2),
+                                    l=surge_arrester["length"],
+                                    ro=surge_arrester["ro"],
                                     phase_pos="B",
                                     gndnumber=int(ground_number)
                                 )
@@ -632,9 +629,9 @@ class CaseGenerator(object):
                             self.surge_arrester_ground.append(
                                 Ground(
                                     bus_pos=bus_obj_ground,
-                                    r=CaseGenerator.r,
-                                    l=CaseGenerator.l,
-                                    ro=CaseGenerator.ro,
+                                    r=(surge_arrester["diameter"] / 2),
+                                    l=surge_arrester["length"],
+                                    ro=surge_arrester["ro"],
                                     phase_pos="C",
                                     gndnumber=int(ground_number)
                                 )

@@ -1,6 +1,6 @@
 from re import sub as remove_spaces
 
-from math import sqrt, acos, sin, pi
+from input.calculate_impedance_load import calculate_impedance_load
 
 from input.convert_dict_types import convert_dict_types
 
@@ -68,14 +68,15 @@ def define_branch(input_file_lines):
             is_branch = True
     branch_dict = {}
     for line in branch_lines:
-        (code, bus_from, bus_to, length, phase, cable, pole) = tuple(line.split(","))
+        (code, bus_from, bus_to, length, phase, cable, pole, rho) = tuple(line.split(","))
         branch_dict[str(code).strip()] = {
             "from": str(bus_from).strip(),
             "to": str(bus_to).strip(),
             "length": str(length).strip(),
             "phase": str(phase).strip(),
             "cable": str(cable).strip(),
-            "pole": str(pole).strip()
+            "pole": str(pole).strip(),
+            "rho": str(rho).strip()
         }
     return branch_dict
 
@@ -231,9 +232,12 @@ def define_surge_arrester(input_file_lines):
             is_surge_arrester = True
     surge_arrester_dict = {}
     for line in surge_arrester_lines:
-        (code, bus) = tuple(line.split(","))
+        (code, bus, diameter, length, ro) = tuple(line.split(","))
         surge_arrester_dict[str(code).strip()] = {
-            "bus": str(bus).strip()
+            "bus": str(bus).strip(),
+            "diameter": str(diameter).strip(),
+            "length": str(length).strip(),
+            "ro": str(ro).strip()
         }
     return surge_arrester_dict
 
@@ -287,13 +291,3 @@ def define_input_dict(input_file):
         input_dict["load"][code]["lb"] = float(l) if "B" in load["phase"] else 0.0
         input_dict["load"][code]["lc"] = float(l) if "C" in load["phase"] else 0.0
     return input_dict
-
-
-def calculate_impedance_load(s, fp, vrms, f, n_phases):
-    v = vrms / sqrt(3) if n_phases == 1 else vrms
-    p = s * fp
-    z = (v ** 2 / p) * fp
-    theta = acos(fp)
-    r = z * fp
-    l = (z * sin(theta)) / (2 * pi * f)
-    return r, l

@@ -49,7 +49,8 @@ class Feeder(object):
                 length=attributes["length"],
                 phase=attributes["phase"],
                 cable={attributes["cable"]: self.feeder_dict["cable"][attributes["cable"]]},
-                pole={attributes["pole"]: self.feeder_dict["pole"][attributes["pole"]]}
+                pole={attributes["pole"]: self.feeder_dict["pole"][attributes["pole"]]},
+                rho=attributes["rho"],
             )
 
         for edge in self.graph.edges():

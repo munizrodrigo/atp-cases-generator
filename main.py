@@ -27,6 +27,16 @@ def main():
     if len(argv) > 1:
         args = cmd.parser.parse_args()
 
+        try:
+            atp_path = ATPExecutor.find_atp()
+        except ATPNotFoundError as excep:
+            print("An error occurred!")
+            print(excep)
+            print(excep.errors)
+            exit()
+
+        execution_cmd = join(atp_path, "tools", "runATP.exe")
+
         if args.inp:
             input_ext = splitext(args.inp)[1].lower()
 
@@ -128,7 +138,12 @@ def main():
         fig_area = feeder.electric_diagram.area_figure
 
         case = CaseGenerator(feeder=feeder)
-        case.generate_base_card(simulation_path=output_path, deltat=args.step, tmax=args.tmax)
+        case.generate_base_card(
+            simulation_path=output_path,
+            execution_cmd=execution_cmd,
+            deltat=args.step,
+            tmax=args.tmax
+        )
 
         dict_bus = {}
         for bus in case.bus:
@@ -141,7 +156,7 @@ def main():
             ATPExecutor.execute_atp(
                 folder_path=output_path,
                 atp_filename="base_feeder",
-                execution_cmd="D:\\ATP\\tools\\runATP.exe"
+                execution_cmd=execution_cmd
             )
 
             output = ATPExecutor.read_pl4(pl4_file=join(output_path, "base_feeder.pl4"))

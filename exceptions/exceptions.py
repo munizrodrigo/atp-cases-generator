@@ -44,3 +44,9 @@ class ATPNotFoundError(FileNotFoundError):
     def __init__(self, message, errors=None):
         super().__init__(message)
         self.errors = errors
+
+
+class BusNotFoundError(ValueError):
+    def __init__(self, message, errors=None):
+        super().__init__(message)
+        self.errors = errors

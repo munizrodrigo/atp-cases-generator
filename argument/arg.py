@@ -49,6 +49,15 @@ class Argument(object):
         )
 
         gen_group.add_argument(
+            "-b",
+            "--bus",
+            action="store",
+            type=str,
+            help="set the central bus of the coverage area",
+            metavar="NAME"
+        )
+
+        gen_group.add_argument(
             "-c",
             "--cov",
             action="store",

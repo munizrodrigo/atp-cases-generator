@@ -133,7 +133,22 @@ def main():
                 if not isdir(output_path):
                     makedirs(output_path)
 
-        feeder.define_area("830", lim=args.cov)
+        if args.bus:
+            if args.bus in feeder.graph.nodes():
+                feeder.define_area(center_bus=args.bus, lim=args.cov)
+            else:
+                try:
+                    raise BusNotFoundError(
+                        message="Bus not found on grid",
+                        errors="The central bus '{0}' must be on the grid.".format(args.bus)
+                    )
+                except BusNotFoundError as excep:
+                    print("An error occurred!")
+                    print(excep)
+                    print(excep.errors)
+                    exit()
+        else:
+            feeder.define_area(center_bus=feeder.main_source_bus, lim=args.cov)
         feeder.electric_diagram.generate_area_figure()
         fig_area = feeder.electric_diagram.area_figure
 

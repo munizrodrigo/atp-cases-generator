@@ -1,10 +1,15 @@
 import os
 import mmap
 import struct
+import winreg
+
 import pandas
 import numpy
 
 from copy import deepcopy as copy
+from os.path import abspath
+
+from exceptions.exceptions import ATPNotFoundError
 
 
 class ATPExecutor(object):
@@ -13,6 +18,22 @@ class ATPExecutor(object):
     """
     def __init__(self):
         pass
+
+    @staticmethod
+    def find_atp():
+        try:
+            key = winreg.OpenKey(
+                winreg.HKEY_LOCAL_MACHINE,
+                "SOFTWARE\\ATPINST",
+                access=winreg.KEY_READ | winreg.KEY_WOW64_32KEY
+            )
+            atp_path = abspath(str(winreg.QueryValueEx(key, "")[0]))
+            return atp_path
+        except FileNotFoundError:
+            raise ATPNotFoundError(
+                message="ATP software was not found",
+                errors="ATP must be installed correctly for this tool to work."
+            )
 
     @staticmethod
     def execute_atp(folder_path, atp_filename, execution_cmd):

@@ -44,13 +44,15 @@ class CaseGenerator(object):
         self.surge_arrester = []
         self.surge_arrester_ground = []
 
-    def generate_base_card(self, simulation_path, create_file=True, overwrite_line=True, deltat=1e-8, tmax=0.01):
+    def generate_base_card(self, simulation_path, execution_cmd, create_file=True, overwrite_line=True, deltat=1e-8,
+                           tmax=0.01):
         self.generate_bus()
 
         self.generate_elements()
 
         self.generate_line(
             simulation_path=simulation_path,
+            execution_cmd=execution_cmd,
             overwrite=overwrite_line
         )
 
@@ -392,7 +394,7 @@ class CaseGenerator(object):
                                     )
                                 )
 
-    def generate_line(self, simulation_path, overwrite=False, min_lim_km=0.01):
+    def generate_line(self, simulation_path, execution_cmd, overwrite=False, min_lim_km=0.01):
         for (edge_from, edge_to) in self.feeder.graph.edges():
             branch = self.feeder.graph[edge_from][edge_to]
             if branch["area"]:
@@ -453,7 +455,7 @@ class CaseGenerator(object):
                     dat_name=bus_neg.node.lower() + "_" + bus_pos.node.lower(),
                     rho=branch["rho"],
                     simulation_path=simulation_path,
-                    run_cmd="D:\\ATP\\tools\\runATP.exe",
+                    run_cmd=execution_cmd,
                     overwrite=overwrite
                 )
                 self.line.append(lcc)

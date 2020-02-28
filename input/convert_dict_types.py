@@ -74,7 +74,9 @@ def convert_dict_types(input_dict):
                 "code": str,
                 "ri": float,
                 "ro": float,
-                "resistivity": float
+                "rmg": float,
+                "rac": float,
+                "rdc": float
             }
         elif case == "surge_arrester":
             list_types = {

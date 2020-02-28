@@ -211,11 +211,13 @@ def define_cable(input_file_lines):
             is_cable = True
     cable_dict = {}
     for line in cable_lines:
-        (code, ri, ro, resistivity) = tuple(line.split(","))
+        (code, ri, ro, rmg, rac, rdc) = tuple(line.split(","))
         cable_dict[str(code).strip()] = {
             "ri": str(ri).strip(),
             "ro": str(ro).strip(),
-            "resistivity": str(resistivity).strip()
+            "rmg": str(ro).strip(),
+            "rac": str(rac).strip(),
+            "rdc": str(rdc).strip()
         }
     return cable_dict
 

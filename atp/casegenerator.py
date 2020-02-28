@@ -428,14 +428,14 @@ class CaseGenerator(object):
                         "height": branch["pole"][struct_type]["height"][n],
                         "sag": branch["pole"][struct_type]["sag"][n],
                     }
-                    if branch["cable"][cond_type]["ri"] == 0.0:
-                        skin = 0.5
-                    else:
-                        skin = branch["cable"][cond_type]["ri"] / branch["cable"][cond_type]["ro"]
+                    skin = (
+                            (branch["cable"][cond_type]["ro"] - branch["cable"][cond_type]["ri"])
+                            / (2 * branch["cable"][cond_type]["ro"])
+                    )
                     cond_phase = {
                         "ip": n + 1,
                         "skin": skin,
-                        "resis": branch["cable"][cond_type]["resistivity"] * 1e3,
+                        "resis": branch["cable"][cond_type]["rdc"] * 1e3,
                         "ix": 4,
                         "react": 0,
                         "diam": 2 * branch["cable"][cond_type]["ro"] * 1e2,

@@ -230,7 +230,7 @@ class GridEquivalent(object):
 
         length = branch["length"]
 
-        rmg = cable["ro"]
+        rmg = cable["rmg"]
 
         height_struct = []
         sag = []
@@ -265,7 +265,7 @@ class GridEquivalent(object):
 
         for (phase, ind) in zip(branch["phase"], inductance):
             z_eq[phase] = Impedance(
-                R=GridEquivalent.correction_factor * ((length * cable["resistivity"]) / (pi * (rmg ** 2))),
+                R=(length * cable["rac"]),
                 L=ind
             )
 

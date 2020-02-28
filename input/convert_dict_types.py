@@ -48,10 +48,7 @@ def convert_dict_types(input_dict):
                 "code": str,
                 "bus": str,
                 "phase": str,
-                "q": float,
-                "ca": float,
-                "cb": float,
-                "cc": float
+                "q": float
             }
         elif case == "switch":
             list_types = {
@@ -74,7 +71,9 @@ def convert_dict_types(input_dict):
                 "code": str,
                 "ri": float,
                 "ro": float,
-                "resistivity": float
+                "rmg": float,
+                "rac": float,
+                "rdc": float
             }
         elif case == "surge_arrester":
             list_types = {

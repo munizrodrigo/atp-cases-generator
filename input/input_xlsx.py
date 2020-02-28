@@ -1,6 +1,6 @@
 import pandas as pd
 
-from input.calculate_impedance_load import calculate_impedance_load
+from input.impedance_load_capacitor import calculate_impedance_load, calculate_impedance_capacitor
 
 from input.convert_dict_types import convert_dict_types
 
@@ -24,9 +24,9 @@ def define_input_dict(input_file):
                 else:
                     input_dict[str(case).lower()][str(list_row[0])][str(h).lower()] = v
     input_dict = convert_dict_types(input_dict=input_dict)
+    vrms = next(iter(input_dict["feeder"].values()))["vrms"]
+    f = next(iter(input_dict["source"].values()))["frequency"]
     for (code, load) in input_dict["load"].items():
-        vrms = next(iter(input_dict["feeder"].values()))["vrms"]
-        f = next(iter(input_dict["source"].values()))["frequency"]
         r, l = calculate_impedance_load(s=load["s"], fp=load["fp"], vrms=vrms, f=f, n_phases=len(load["phase"]))
         input_dict["load"][code]["ra"] = float(r) if "A" in load["phase"] else 0.0
         input_dict["load"][code]["rb"] = float(r) if "B" in load["phase"] else 0.0
@@ -34,5 +34,10 @@ def define_input_dict(input_file):
         input_dict["load"][code]["la"] = float(l) if "A" in load["phase"] else 0.0
         input_dict["load"][code]["lb"] = float(l) if "B" in load["phase"] else 0.0
         input_dict["load"][code]["lc"] = float(l) if "C" in load["phase"] else 0.0
+    for (code, capacitor) in input_dict["capacitor"].items():
+        c = calculate_impedance_capacitor(q=capacitor["q"], vrms=vrms, f=f, n_phases=len(capacitor["phase"]))
+        input_dict["capacitor"][code]["ca"] = float(c) if "A" in capacitor["phase"] else 0.0
+        input_dict["capacitor"][code]["cb"] = float(c) if "B" in capacitor["phase"] else 0.0
+        input_dict["capacitor"][code]["cc"] = float(c) if "C" in capacitor["phase"] else 0.0
     return input_dict
 

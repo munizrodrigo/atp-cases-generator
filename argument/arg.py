@@ -68,6 +68,17 @@ class Argument(object):
         )
 
         gen_group.add_argument(
+            "-m",
+            "--limit",
+            action="store",
+            default=config["equivalent"]["maximum_limit"],
+            type=float,
+            help=("set the maximum permissible length in meters for the transmission line equivalent "
+                  "(default: %(metavar)s = %(default)s)"),
+            metavar="LIM"
+        )
+
+        gen_group.add_argument(
             "-l",
             "--line",
             action="store_true",

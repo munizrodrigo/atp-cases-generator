@@ -110,7 +110,11 @@ def main():
         pprint.pprint(feeder_dict)
 
         try:
-            feeder = Feeder(feeder_dict=feeder_dict)
+            feeder = Feeder(
+                feeder_dict=feeder_dict,
+                use_line_equivalents=args.line,
+                line_equivalents_length_limit=args.limit
+            )
         except CyclicGraphError as excep:
             print("An error occurred!")
             print(excep)

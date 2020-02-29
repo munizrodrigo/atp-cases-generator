@@ -8,7 +8,7 @@ from exceptions.exceptions import CyclicGraphError
 
 
 class Feeder(object):
-    def __init__(self, feeder_dict):
+    def __init__(self, feeder_dict, use_line_equivalents=False, line_equivalents_length_limit=5000):
         self.feeder_dict = feeder_dict
         self.main_source_bus = None
         self.graph = None
@@ -24,6 +24,9 @@ class Feeder(object):
         self.generate_graph()
         self.remove_cycles()
         self.organize_feeder()
+
+        if use_line_equivalents:
+            self.simplify_feeder(length_limit=line_equivalents_length_limit)
 
         self.grid_equivalent = GridEquivalent(feeder=self)
         self.grid_equivalent.calc_equivalent_impedances()
@@ -170,16 +173,66 @@ class Feeder(object):
         for bus in graph_list.keys():
             if self.graph.degree[bus] == 1 and not bus == self.main_source_bus:
                 out_edge_list.append(bus)
-            for node in out_edge_list:
-                path = nx.shortest_path(G=graph_undirected, source=self.main_source_bus, target=node)
-                path_edges = list(zip(path, path[1:]))
-                for (edge_from, edge_to) in path_edges:
-                    attrs = graph_undirected[edge_from][edge_to]
-                    if self.graph.has_edge(u=edge_from, v=edge_to):
-                        self.graph.remove_edge(u=edge_from, v=edge_to)
-                    if self.graph.has_edge(u=edge_to, v=edge_from):
-                        self.graph.remove_edge(u=edge_to, v=edge_from)
-                    self.graph.add_edge(u_of_edge=edge_from, v_of_edge=edge_to, **attrs)
+        for node in out_edge_list:
+            path = nx.shortest_path(G=graph_undirected, source=self.main_source_bus, target=node)
+            path_edges = list(zip(path, path[1:]))
+            for (edge_from, edge_to) in path_edges:
+                attrs = graph_undirected[edge_from][edge_to]
+                if self.graph.has_edge(u=edge_from, v=edge_to):
+                    self.graph.remove_edge(u=edge_from, v=edge_to)
+                if self.graph.has_edge(u=edge_to, v=edge_from):
+                    self.graph.remove_edge(u=edge_to, v=edge_from)
+                self.graph.add_edge(u_of_edge=edge_from, v_of_edge=edge_to, **attrs)
+
+    def simplify_feeder(self, length_limit=5000):
+        graph_list = nx.to_dict_of_lists(G=self.graph)
+        not_remove_node_list = []
+        for bus in graph_list.keys():
+            if self.graph.degree[bus] == 2:
+                edge_in = list(self.graph.in_edges(bus))[0]
+                edge_in_attr = self.graph[edge_in[0]][edge_in[1]]
+                edge_out = list(self.graph.out_edges(bus))[0]
+                edge_out_attr = self.graph[edge_out[0]][edge_out[1]]
+            if not self.graph.degree[bus] == 2:
+                if not bus == self.main_source_bus:
+                    not_remove_node_list.append(bus)
+            elif "source" in self.graph.nodes[bus]:
+                not_remove_node_list.append(bus)
+            elif "surge" in self.graph.nodes[bus]:
+                not_remove_node_list.append(bus)
+            elif "load" in self.graph.nodes[bus]:
+                not_remove_node_list.append(bus)
+            elif "capacitor" in self.graph.nodes[bus]:
+                not_remove_node_list.append(bus)
+            elif "surge_arrester" in self.graph.nodes[bus]:
+                not_remove_node_list.append(bus)
+            elif not edge_in_attr["phase"] == edge_out_attr["phase"]:
+                not_remove_node_list.append(bus)
+            elif not edge_in_attr["cable"] == edge_out_attr["cable"]:
+                not_remove_node_list.append(bus)
+            elif not edge_in_attr["pole"] == edge_out_attr["pole"]:
+                not_remove_node_list.append(bus)
+            elif not edge_in_attr["rho"] == edge_out_attr["rho"]:
+                not_remove_node_list.append(bus)
+        for node in sorted(self.graph.nodes()):
+            if node not in not_remove_node_list and not node == self.main_source_bus:
+                edge_in = list(self.graph.in_edges(node))[0]
+                edge_in_attr = self.graph[edge_in[0]][edge_in[1]]
+                edge_out = list(self.graph.out_edges(node))[0]
+                edge_out_attr = self.graph[edge_out[0]][edge_out[1]]
+                if edge_in_attr["length"] + edge_out_attr["length"] < length_limit:
+                    new_from = str(edge_in[0])
+                    new_to = str(edge_out[1])
+                    new_attr = {
+                        "code": "{0} + {1}".format(edge_in_attr["code"], edge_out_attr["code"]),
+                        "length": edge_in_attr["length"] + edge_out_attr["length"],
+                        "phase": copy(edge_in_attr["phase"]),
+                        "cable": copy(edge_in_attr["cable"]),
+                        "pole": copy(edge_in_attr["pole"]),
+                        "rho": copy(edge_in_attr["rho"]),
+                    }
+                    self.graph.add_edge(u_of_edge=new_from, v_of_edge=new_to, **new_attr)
+                    self.graph.remove_node(n=node)
 
     def define_area(self, center_bus, lim=100):
         if lim > len(list(self.graph)):

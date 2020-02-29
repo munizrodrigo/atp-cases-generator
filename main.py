@@ -27,8 +27,19 @@ def main():
     if len(argv) > 1:
         args = cmd.parser.parse_args()
 
+        if args.print:
+            print(config.parser["version"]["prog"])
+            print("Version: " + config.parser["version"]["version"])
+            print()
+
+            print("Searching for ATP installation path...")
+            print()
+
         try:
             atp_path = ATPExecutor.find_atp()
+            if args.print:
+                print("ATP installation found at: " + atp_path)
+                print()
         except ATPNotFoundError as excep:
             print("An error occurred!")
             print(excep)
@@ -38,6 +49,12 @@ def main():
         execution_cmd = join(atp_path, "tools", "runATP.exe")
 
         if args.inp:
+            if args.print:
+                print("Input file defined as: " + args.inp)
+                print()
+                print("Reading input file ...")
+                print()
+
             input_ext = splitext(args.inp)[1].lower()
 
             if input_ext == ".txt":
@@ -71,6 +88,12 @@ def main():
                     exit()
 
         elif args.dict:
+            if args.print:
+                print("Input dict defined as: " + args.dict)
+                print()
+                print("Reading input file...")
+                print()
+
             dict_ext = splitext(args.dict)[1].lower()
 
             if dict_ext == ".json" or dict_ext == ".txt":
@@ -107,7 +130,14 @@ def main():
                 print(excep.errors)
                 exit()
 
-        pprint.pprint(feeder_dict)
+        if args.print:
+            print("Input file read successfully!")
+            print()
+            print("Feeder: " + next(iter(feeder_dict["feeder"])))
+            print("Voltage RMS: " + str(next(iter(feeder_dict["feeder"].values()))["vrms"]))
+            print("Number of Buses: " + str(len(feeder_dict["bus"])))
+            print("Number of Branches: " + str(len(feeder_dict["branch"])))
+            print()
 
         try:
             feeder = Feeder(
@@ -124,10 +154,20 @@ def main():
         fig_base = feeder.electric_diagram.base_figure
 
         if args.out:
+            if args.print:
+                print("Output directory defined as: " + args.out)
+                print()
+                print("Creating output directory...")
+                print()
             output_path = abspath(args.out)
             if not isdir(output_path):
                 makedirs(output_path)
         else:
+            if args.print:
+                print("Output directory not defined! Using default instead.")
+                print()
+                print("Creating output directory...")
+                print()
             if args.inp:
                 output_path = abspath(join(dirname(args.inp), "output"))
                 if not isdir(output_path):
@@ -137,7 +177,14 @@ def main():
                 if not isdir(output_path):
                     makedirs(output_path)
 
+        if args.print:
+            print("Output directory created successfully!")
+            print()
+
         if args.bus:
+            if args.print:
+                print("Coverage area central bus defined as: " + args.bus)
+                print()
             if args.bus in feeder.graph.nodes():
                 feeder.define_area(center_bus=args.bus, lim=args.cov)
             else:
@@ -157,12 +204,21 @@ def main():
         fig_area = feeder.electric_diagram.area_figure
 
         case = CaseGenerator(feeder=feeder)
-        case.generate_base_card(
+
+        if args.print:
+            print("Generating feeder ATP Cases...")
+            print()
+
+        case.generate_card(
             simulation_path=output_path,
             execution_cmd=execution_cmd,
             deltat=args.step,
             tmax=args.tmax
         )
+
+        if args.print:
+            print("Feeder ATP Cases generated successfully!")
+            print()
 
         dict_bus = {}
         for bus in case.bus:
@@ -172,6 +228,10 @@ def main():
             json.dump(obj=dict_bus, fp=bus_names, indent=4, sort_keys=True)
 
         if args.exec:
+            if args.print:
+                print("Executing ATP base feeder file...")
+                print()
+
             ATPExecutor.execute_atp(
                 folder_path=output_path,
                 atp_filename="base_feeder",
@@ -182,6 +242,12 @@ def main():
 
             with open(join(output_path, "base_feeder_output.pckl"), "wb") as output_pckl:
                 pickle.dump(output, output_pckl)
+
+            if args.print:
+                print("ATP base feeder file executed successfully!")
+                print()
+                print("Executing ATP surge feeder file...")
+                print()
 
             ATPExecutor.execute_atp(
                 folder_path=output_path,
@@ -194,7 +260,15 @@ def main():
             with open(join(output_path, "surge_feeder_output.pckl"), "wb") as output_pckl:
                 pickle.dump(output, output_pckl)
 
+            if args.print:
+                print("ATP surge feeder file executed successfully!")
+                print()
+
         if args.graph:
+            if args.print:
+                print("Generating feeder figures...")
+                print()
+
             orca_config.executable = join(dirname(abspath(__file__)), "orca", "orca.exe")
 
             fig_base.write_image(join(output_path, "base_feeder.png"))
@@ -202,6 +276,14 @@ def main():
 
             offline_plot(fig_base, filename=join(output_path, "base_feeder.html"), auto_open=False)
             offline_plot(fig_area, filename=join(output_path, "area_feeder.html"), auto_open=False)
+
+            if args.print:
+                print("Feeder figures generated successfully!")
+                print()
+
+        if args.print:
+            print("ATP Cases Generator executed successfully!")
+            print()
 
     else:
         args = cmd.parser.parse_args(["-h"])

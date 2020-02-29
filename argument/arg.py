@@ -16,6 +16,13 @@ class Argument(object):
             version="{} v{}".format(config["version"]["prog"], config["version"]["version"])
         )
 
+        self.parser.add_argument(
+            "-p",
+            "--print",
+            action="store_true",
+            help="print the information to the console"
+        )
+
         gen_group = self.parser.add_argument_group(
             title="ATP cases generator arguments",
             description="Arguments related to reading input files and generating .atp files."

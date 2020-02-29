@@ -44,8 +44,8 @@ class CaseGenerator(object):
         self.surge_arrester = []
         self.surge_arrester_ground = []
 
-    def generate_base_card(self, simulation_path, execution_cmd, create_file=True, overwrite_line=True, deltat=1e-8,
-                           tmax=0.01):
+    def generate_card(self, simulation_path, execution_cmd, create_file=True, overwrite_line=True, deltat=1e-8,
+                      tmax=0.01):
         self.generate_bus()
 
         self.generate_elements()

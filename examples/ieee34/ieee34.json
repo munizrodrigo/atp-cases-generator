@@ -132,7 +132,7 @@
             "to": "802",
             "length": 786.384,
             "phase": "ABCN",
-            "cable": "1/0",
+            "cable": "ACSR 1/0",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -141,7 +141,7 @@
             "to": "806",
             "length": 527.304,
             "phase": "ABCN",
-            "cable": "1/0",
+            "cable": "ACSR 1/0",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -150,7 +150,7 @@
             "to": "808",
             "length": 9823.704,
             "phase": "ABCN",
-            "cable": "1/0",
+            "cable": "ACSR 1/0",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -159,7 +159,7 @@
             "to": "810",
             "length": 1769.0592,
             "phase": "BN",
-            "cable": "#4 6/1",
+            "cable": "ACSR #4 6/1",
             "pole": "IEEE_510",
 			"rho": 120.0
         },
@@ -168,7 +168,7 @@
             "to": "812",
             "length": 11430.0,
             "phase": "ABCN",
-            "cable": "1/0",
+            "cable": "ACSR 1/0",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -177,7 +177,7 @@
             "to": "814",
             "length": 9061.704,
             "phase": "ABCN",
-            "cable": "1/0",
+            "cable": "ACSR 1/0",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -186,7 +186,7 @@
             "to": "818",
             "length": 521.208,
             "phase": "AN",
-            "cable": "#4 6/1",
+            "cable": "ACSR #4 6/1",
             "pole": "IEEE_510",
 			"rho": 120.0
         },
@@ -195,7 +195,7 @@
             "to": "824",
             "length": 3112.008,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -204,7 +204,7 @@
             "to": "820",
             "length": 14676.12,
             "phase": "AN",
-            "cable": "#4 6/1",
+            "cable": "ACSR #4 6/1",
             "pole": "IEEE_510",
 			"rho": 120.0
         },
@@ -213,7 +213,7 @@
             "to": "822",
             "length": 4187.952,
             "phase": "AN",
-            "cable": "#4 6/1",
+            "cable": "ACSR #4 6/1",
             "pole": "IEEE_510",
 			"rho": 120.0
         },
@@ -222,7 +222,7 @@
             "to": "826",
             "length": 923.544,
             "phase": "BN",
-            "cable": "#4 6/1",
+            "cable": "ACSR #4 6/1",
             "pole": "IEEE_510",
 			"rho": 120.0
         },
@@ -231,7 +231,7 @@
             "to": "828",
             "length": 256.032,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -240,7 +240,7 @@
             "to": "830",
             "length": 6230.112,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -249,7 +249,7 @@
             "to": "854",
             "length": 158.496,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -258,7 +258,7 @@
             "to": "858",
             "length": 1493.52,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -267,7 +267,7 @@
             "to": "860",
             "length": 615.696,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -276,7 +276,7 @@
             "to": "842",
             "length": 85.344,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -285,7 +285,7 @@
             "to": "840",
             "length": 262.128,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -294,7 +294,7 @@
             "to": "862",
             "length": 85.344,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -303,7 +303,7 @@
             "to": "844",
             "length": 411.48,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -312,7 +312,7 @@
             "to": "846",
             "length": 1109.472,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -321,7 +321,7 @@
             "to": "848",
             "length": 161.544,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -330,7 +330,7 @@
             "to": "816",
             "length": 94.488,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -339,7 +339,7 @@
             "to": "856",
             "length": 7110.984,
             "phase": "BN",
-            "cable": "#4 6/1",
+            "cable": "ACSR #4 6/1",
             "pole": "IEEE_510",
 			"rho": 120.0
         },
@@ -348,7 +348,7 @@
             "to": "854",
             "length": 11225.784,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -357,7 +357,7 @@
             "to": "864",
             "length": 493.776,
             "phase": "AN",
-            "cable": "#4 6/1",
+            "cable": "ACSR #4 6/1",
             "pole": "IEEE_510",
 			"rho": 120.0
         },
@@ -366,7 +366,7 @@
             "to": "858",
             "length": 1776.984,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -375,7 +375,7 @@
             "to": "860",
             "length": 816.864,
             "phase": "ABCN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_500",
 			"rho": 120.0
         },
@@ -384,7 +384,7 @@
             "to": "862",
             "length": 1481.328,
             "phase": "BN",
-            "cable": "#2 6/1",
+            "cable": "ACSR #2 6/1",
             "pole": "IEEE_510",
 			"rho": 120.0
         }

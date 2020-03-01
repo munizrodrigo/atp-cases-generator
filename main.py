@@ -269,7 +269,7 @@ def main():
                 print("Generating feeder figures...")
                 print()
 
-            orca_config.executable = join(dirname(abspath(__file__)), "orca", "orca.exe")
+            orca_config.executable = join(dirname(abspath(__file__)), ".orca", "orca.exe")
 
             fig_base.write_image(join(output_path, "base_feeder.png"))
             fig_area.write_image(join(output_path, "area_feeder.png"))

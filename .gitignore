@@ -212,7 +212,8 @@ env.bak/
 venv.bak/
 pip-selfcheck.json
 
-!.venv/.gitkeep 
+!.venv/.gitkeep
+!.orca/*
 
 ### VirtualEnv ###
 # Virtualenv

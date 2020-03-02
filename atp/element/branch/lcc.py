@@ -367,7 +367,7 @@ class LCC(Element):
 
         linha = "$INCLUDE, " + complete_lib
         for cond in self.cond:
-            if len(linha + ", " + cond['bus_in'] + cond["fase"]) <= 80:
+            if len(linha + ", " + cond['bus_in'] + cond["fase"]) <= 77:
                 linha += ", " + cond['bus_in'] + cond["fase"]
             else:
                 linha += " $$\n"
@@ -375,7 +375,7 @@ class LCC(Element):
                 linha = "  , " + cond['bus_in'] + cond["fase"]
 
         for cond in self.cond:
-            if len(linha + ", " + cond['bus_out'] + cond["fase"]) <= 80:
+            if len(linha + ", " + cond['bus_out'] + cond["fase"]) <= 77:
                 linha += ", " + cond['bus_out'] + cond["fase"]
             else:
                 linha += " $$\n"

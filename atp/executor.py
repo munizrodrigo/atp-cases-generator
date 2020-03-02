@@ -1,6 +1,7 @@
 import os
 import mmap
 import struct
+import subprocess
 import winreg
 
 import pandas
@@ -40,7 +41,8 @@ class ATPExecutor(object):
         if not atp_filename[-4:] == ".atp":
             atp_filename += ".atp"
         complete_filename = os.path.join(folder_path, atp_filename)
-        os.system(execution_cmd + " " + complete_filename + " >nul")
+        complete_command = [execution_cmd, complete_filename, ">nul"]
+        subprocess.call(complete_command, shell=True)
 
     @staticmethod
     def read_pl4(pl4_file):

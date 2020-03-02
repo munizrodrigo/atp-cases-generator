@@ -1,8 +1,11 @@
+import subprocess
+import os
+
 from atp.formatter.formatter import Formatter
 from atp.element.element import Element
 from atp.node.node import Node
 from os.path import isfile as file_exist
-import os
+
 
 class LCC(Element):
     """
@@ -215,12 +218,22 @@ class LCC(Element):
             if overwrite:
                 work = False
                 while work is not True:
-                    os.system(self.run_cmd + " " + os.path.join(self.simulation_path, self.dat_name + ".dat") + " >nul")
+                    complete_command = [
+                        self.run_cmd,
+                        os.path.join(self.simulation_path, self.dat_name + ".dat"),
+                        ">nul"
+                    ]
+                    subprocess.call(complete_command, shell=True)
                     work = file_exist(os.path.join(self.simulation_path,self.dat_name+".pch"))
         except FileNotFoundError:
             work = False
             while work is not True:
-                os.system(self.run_cmd + " " + os.path.join(self.simulation_path, self.dat_name + ".dat") + " >nul")
+                complete_command = [
+                    self.run_cmd,
+                    os.path.join(self.simulation_path, self.dat_name + ".dat"),
+                    ">nul"
+                ]
+                subprocess.call(complete_command, shell=True)
                 work = file_exist(os.path.join(self.simulation_path, self.dat_name + ".pch"))
 
         arquivo_pch = open(os.path.join(self.simulation_path, self.dat_name + ".pch"), 'r+')

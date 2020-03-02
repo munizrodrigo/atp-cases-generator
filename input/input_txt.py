@@ -212,7 +212,7 @@ def define_cable(input_file_lines):
         cable_dict[str(code).strip()] = {
             "ri": str(ri).strip(),
             "ro": str(ro).strip(),
-            "rmg": str(ro).strip(),
+            "rmg": str(rmg).strip(),
             "rac": str(rac).strip(),
             "rdc": str(rdc).strip()
         }

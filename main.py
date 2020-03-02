@@ -1,5 +1,4 @@
 import json
-import pprint
 import pickle
 
 from sys import argv

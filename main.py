@@ -4,6 +4,8 @@ import pickle
 from sys import argv
 from os import makedirs
 from os.path import abspath, splitext, isdir, join, dirname
+from pathlib import Path
+from shutil import rmtree, copytree
 from plotly.io.orca import config as orca_config
 from plotly.offline import plot as offline_plot
 
@@ -176,6 +178,28 @@ def main():
                 if not isdir(output_path):
                     makedirs(output_path)
 
+        use_temp_directory = False
+        if " " in output_path:
+            use_temp_directory = True
+
+        if use_temp_directory:
+            home_path = abspath(str(Path.home()))
+            work_directory = join(home_path, "DOCUME~1", "ATPdata", "work")
+            sim_directory = join(work_directory, next(iter(feeder.feeder_dict["feeder"])))
+            if not isdir(sim_directory):
+                makedirs(sim_directory)
+            else:
+                rmtree(path=sim_directory)
+                makedirs(sim_directory)
+            if args.print:
+                print(
+                    "Illegal ATP character found in the output directory. Using the temporary directory: "
+                    + sim_directory
+                )
+                print()
+        else:
+            sim_directory = str(output_path)
+
         if args.print:
             print("Output directory created successfully!")
             print()
@@ -209,7 +233,7 @@ def main():
             print()
 
         case.generate_card(
-            simulation_path=output_path,
+            simulation_path=sim_directory,
             execution_cmd=execution_cmd,
             deltat=args.step,
             tmax=args.tmax
@@ -223,7 +247,7 @@ def main():
         for bus in case.bus:
             dict_bus[bus.name] = bus.node
 
-        with open(join(output_path, "bus_names.json"), "w") as bus_names:
+        with open(join(sim_directory, "bus_names.json"), "w") as bus_names:
             json.dump(obj=dict_bus, fp=bus_names, indent=4, sort_keys=True)
 
         if args.exec:
@@ -232,14 +256,14 @@ def main():
                 print()
 
             ATPExecutor.execute_atp(
-                folder_path=output_path,
+                folder_path=sim_directory,
                 atp_filename="base_feeder",
                 execution_cmd=execution_cmd
             )
 
-            output = ATPExecutor.read_pl4(pl4_file=join(output_path, "base_feeder.pl4"))
+            output = ATPExecutor.read_pl4(pl4_file=join(sim_directory, "base_feeder.pl4"))
 
-            with open(join(output_path, "base_feeder_output.pckl"), "wb") as output_pckl:
+            with open(join(sim_directory, "base_feeder_output.pckl"), "wb") as output_pckl:
                 pickle.dump(output, output_pckl)
 
             if args.print:
@@ -249,14 +273,14 @@ def main():
                 print()
 
             ATPExecutor.execute_atp(
-                folder_path=output_path,
+                folder_path=sim_directory,
                 atp_filename="surge_feeder",
                 execution_cmd=execution_cmd
             )
 
-            output = ATPExecutor.read_pl4(pl4_file=join(output_path, "surge_feeder.pl4"))
+            output = ATPExecutor.read_pl4(pl4_file=join(sim_directory, "surge_feeder.pl4"))
 
-            with open(join(output_path, "surge_feeder_output.pckl"), "wb") as output_pckl:
+            with open(join(sim_directory, "surge_feeder_output.pckl"), "wb") as output_pckl:
                 pickle.dump(output, output_pckl)
 
             if args.print:
@@ -270,14 +294,29 @@ def main():
 
             orca_config.executable = join(dirname(abspath(__file__)), ".orca", "orca.exe")
 
-            fig_base.write_image(join(output_path, "base_feeder.png"))
-            fig_area.write_image(join(output_path, "area_feeder.png"))
+            fig_base.write_image(join(sim_directory, "base_feeder.png"))
+            fig_area.write_image(join(sim_directory, "area_feeder.png"))
 
-            offline_plot(fig_base, filename=join(output_path, "base_feeder.html"), auto_open=False)
-            offline_plot(fig_area, filename=join(output_path, "area_feeder.html"), auto_open=False)
+            offline_plot(fig_base, filename=join(sim_directory, "base_feeder.html"), auto_open=False)
+            offline_plot(fig_area, filename=join(sim_directory, "area_feeder.html"), auto_open=False)
 
             if args.print:
                 print("Feeder figures generated successfully!")
+                print()
+
+        if use_temp_directory:
+            if args.print:
+                print("Copying files from the temporary directory to the output directory...")
+                print()
+            copytree(src=sim_directory, dst=output_path, dirs_exist_ok=True)
+            if args.print:
+                print("Files copied successfully!")
+                print()
+                print("Deleting temporary directory...")
+                print()
+            rmtree(path=sim_directory)
+            if args.print:
+                print("Directory deleted successfully!")
                 print()
 
         if args.print:

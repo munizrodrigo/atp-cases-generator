@@ -6,7 +6,10 @@ from os.path import abspath, join, dirname
 
 if __name__ == "__main__":
     command = sys.argv[1:]
-    project_path = dirname(abspath(__file__))
+    if getattr(sys, "frozen", False):
+        project_path = dirname(sys.executable)
+    elif __file__:
+        project_path = dirname(__file__)
     venv_python_path = join(project_path, ".venv", "Scripts")
     main_python_path = join(project_path, "main.py")
     if command:

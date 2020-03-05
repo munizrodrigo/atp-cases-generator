@@ -1,13 +1,12 @@
 import json
 import pickle
+import warnings
 
 from sys import argv
 from os import makedirs
 from os.path import abspath, splitext, isdir, join, dirname
 from pathlib import Path
 from shutil import rmtree, copytree
-from plotly.io.orca import config as orca_config
-from plotly.offline import plot as offline_plot
 
 from configuration.config import Configuration
 from argument.arg import Argument
@@ -21,6 +20,11 @@ from exceptions.exceptions import *
 
 
 def main():
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        from plotly.io.orca import config as orca_config
+        from plotly.offline import plot as offline_plot
+
     config = Configuration(script_path=abspath(__file__))
 
     cmd = Argument(config=config.parser)

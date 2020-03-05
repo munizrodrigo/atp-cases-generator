@@ -1,8 +1,8 @@
+import warnings
+
 from copy import deepcopy as copy
 
 from webcolors import name_to_rgb as rgb
-
-import plotly.graph_objects as go
 
 
 class ElectricDiagram(object):
@@ -12,6 +12,9 @@ class ElectricDiagram(object):
         self.area_figure = None
 
     def generate_base_figure(self):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            import plotly.graph_objects as go
         node_x = []
         node_y = []
         node_text = []
@@ -195,6 +198,9 @@ class ElectricDiagram(object):
         self.base_figure = base_figure
 
     def generate_area_figure(self):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            import plotly.graph_objects as go
         node_x = []
         node_y = []
         node_text = []
@@ -428,6 +434,9 @@ class ElectricDiagram(object):
 
     @staticmethod
     def plot_basic_graph(graph):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            import plotly.graph_objects as go
         node_x = []
         node_y = []
         node_text = []

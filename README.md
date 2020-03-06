@@ -2,6 +2,23 @@
 
 Preparing files for running case studies using ATPDraw can become a time-consuming and human error-prone task. This software presents a toolbox for automatic generation and execution of ATP input files based on information obtained from a typical technical database of distribution utilities. This toolbox aims to reduce modeling time and susceptibility to human errors in the process of describing the grid in the software input file, which constitute the biggest obstacles to the extensive use of this program in real distribution grids.
 
+- [Installation](README.md#installation)
+  - [Prerequisites](README.md#prerequisites)
+  - [Setup](README.md#setup)
+  - [Clone](README.md#clone)
+- [Features](README.md#features)
+- [Usage](README.md#usage)
+  - [Basic Usage](README.md#basic-usage)
+  - [Printing to Console](README.md#printing-to-console)
+  - [Generating Electric Diagrams](README.md#generating-electric-diagrams)
+  - [Using Equivalents](README.md#using-equivalents)
+  - [Executing .ATP Files](README.md#executing-atp-files)
+  - [Defining Stepsize and Maximum Simulation Time](README.md#defining-stepsize-and-maximum-simulation-time)
+  - [Arguments](README.md#arguments)
+- [Documentation](README.md#documentation)
+  - [Input File](README.md#input-file)
+  - [Coverage Area](README.md#coverage-area)
+  - [Line Equivalent](README.md#line-equivalent)
 
 ## Installation
 
@@ -75,7 +92,7 @@ Or:
 atpcasesgenerator -i [INPUT FILE] -o [OUTPUT DIRECTORY]
 ```
 
-Let's say that you have the file `C:\ieee34.txt` as an input file describing the grid to generate according to the [input file documentation](README.md#inputfile), and want to generate the corresponding *.atp* files in the directory `C:\output`. The command will be as follows:
+Let's say that you have the file `C:\ieee34.txt` as an input file describing the grid to generate according to the [input file documentation](README.md#input-file), and want to generate the corresponding *.atp* files in the directory `C:\output`. The command will be as follows:
 
 ```
 atpcasesgenerator -i "C:\ieee34.txt" -o "C:\output"
@@ -112,14 +129,14 @@ This command will create four files in the output directory:
 <kbd>![basefeeder](https://user-images.githubusercontent.com/56405383/76027487-73319980-5f0f-11ea-951c-5378b6d3b8b9.gif)</kbd>
 
 - `base_feeder.png`, an static version of `base_feeder.html`.
-- `area_feeder.html`, an interactive graph defining the [coverage area](README.md#coveragearea).
+- `area_feeder.html`, an interactive graph defining the [coverage area](README.md#coverage-area).
 - `area_feeder.png`, an static version of `area_feeder.html`.
 
 #### Using Equivalents
 
-Two forms of equivalent are available in this tool. The coverage area defines the external equivalent, while the internal equivalent corresponds to the line equivalents which are within the coverage area. Both are defined [here](README.md#coveragearea) and [here](README.md#lineequivalent).
+Two forms of equivalent are available in this tool. The coverage area defines the external equivalent, while the internal equivalent corresponds to the line equivalents which are within the coverage area. Both are defined [here](README.md#coverage-area) and [here](README.md#line-equivalent).
 
-To use the external equivalent, you have to define the central bus of the [coverage area](README.md#coveragearea) using the command `--bus`. After that, you need to define the number of adjacent buses to be added to the coverage area using the command `--cov`.The complete command is as follows:
+To use the external equivalent, you have to define the central bus of the [coverage area](README.md#coverage-area) using the command `--bus`. After that, you need to define the number of adjacent buses to be added to the coverage area using the command `--cov`.The complete command is as follows:
 
 ```
 atpcasesgenerator --inp [INPUT FILE] --out [OUTPUT DIRECTORY] --bus [CENTRAL BUS] --cov [NUMBER OF BUSES]
@@ -141,7 +158,7 @@ You can check `area_feeder.html` to see if the coverage area is in accordance wi
 
 <kbd>![areafeeder](https://user-images.githubusercontent.com/56405383/76034506-e04c2b80-5f1d-11ea-8043-7653b9d969bb.gif)</kbd>
 
-The internal equivalent excludes buses that are only passing buses, without elements such as load, capacitor and others. The complete definition of this equivalent can be found [here](README.md#lineequivalent). The commands are `--limit`, to define the maximum length of an equivalent line, and `--line` to use this kind of equivalent.
+The internal equivalent excludes buses that are only passing buses, without elements such as load, capacitor and others. The complete definition of this equivalent can be found [here](README.md#line-equivalent). The commands are `--limit`, to define the maximum length of an equivalent line, and `--line` to use this kind of equivalent.
 
 #### Executing *.ATP* Files
 
@@ -169,10 +186,10 @@ atpcasesgenerator -i "C:\ieee34.txt" -o "C:\output" -s 1e-8 -t 0.01
 | `--inp [FILE]`  | `-i [FILE]`   | Set the path of input .xlsx or .txt file.                                             |
 | `--dict [FILE]` | `-d [FILE]`   | Set the path of input .json file with electric grid dictionary.                       |
 | `--out [PATH]`  | `-o [PATH]`   | Set the directory of output files.                                                    |
-| `--bus [NAME]`  | `-b [NAME]`   | Set the central bus of the [coverage area](README.md#coveragearea).                   |
-| `--cov [BUS]`   | `-c [BUS]`    | Set the number of electric buses in the [coverage area](README.md#coveragearea).      |
-| `--limit [LIM]` | `-m [LIM]`    | Set the maximum length in meters for the [line equivalent](README.md#lineequivalent). |
-| `--line`        | `-l`          | Use [line equivalents](README.md#lineequivalent).                                     |
+| `--bus [NAME]`  | `-b [NAME]`   | Set the central bus of the [coverage area](README.md#coverage-area).                   |
+| `--cov [BUS]`   | `-c [BUS]`    | Set the number of electric buses in the [coverage area](README.md#coverage-area).      |
+| `--limit [LIM]` | `-m [LIM]`    | Set the maximum length in meters for the [line equivalent](README.md#line-equivalent). |
+| `--line`        | `-l`          | Use [line equivalents](README.md#line-equivalent).                                     |
 | `--graph`       | `-g`          | Generate electric grid graphs.                                                        |
 | `--exec`        | `-e`          | Execute generated .atp file.                                                          |
 | `--step [STEP]` | `-s [STEP]`   | Set simulation stepsize in seconds, equivalent to *DELTAT* variable on ATP.           |

@@ -1,0 +1,57 @@
+DATA tipo, L, CFO, freq{DFLT:60}, vi[1..25], ti[1..25]
+INPUT v1,v2
+OUTPUT CLOSE
+VAR viso, tempo, valor1, valor2, Eo, DEb, CLOSE, l1, j, DE, dif_e, ie, Khileman
+DELAY CELLS (DE): 1
+INIT
+  CLOSE:=0
+  valor1:=0
+  valor2:=0
+  ie:=0
+  dif_e:=0
+  integral(dif_e):=0
+  histdef(ie):=0
+  histdef(integral(dif_e)):=0
+ENDINIT
+EXEC
+  tempo:=1.2E-6
+  -- Modelo 1
+  IF tipo=1 THEN
+    viso:=(400*L)+((710*L)/sqrt(sqrt((tempo*tempo*tempo))))
+    IF abs(v1-v2)>viso THEN
+      CLOSE:= 1
+    ENDIF
+
+  -- Modelo 2: IEEE
+  ELSIF tipo=2 THEN
+    valor1:=CFO*1.5
+    IF v1>valor1 THEN
+       CLOSE:=1
+    ENDIF
+
+  -- Modelo3:  Hileman
+  ELSIF tipo=3 THEN
+    Eo:=0.77*CFO
+    Khileman:=1.36
+
+    FOR j:=1 TO 69 DO
+      valor1:=valor1*CFO
+    ENDFOR
+
+    valor2:=valor1
+
+    FOR l1:=1 TO 25 DO
+       valor2:=sqrt(valor2)
+    ENDFOR
+
+    DEb:=1.1506*valor2
+
+    dif_e:=(v1-Eo)
+    ie:=integral(dif_e)
+    DE:=ie-delay(ie,timestep)
+
+    IF DE>DEb THEN CLOSE:=1 ENDIF
+
+  ENDIF
+ENDEXEC
+ENDMODEL
